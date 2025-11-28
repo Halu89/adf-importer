@@ -1,11 +1,35 @@
 {
-  "extends": "@requirementyogi/typescript-config/ui-kit",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Requirement Yogi - TypeScript configuration - UI Kit",
   "compilerOptions": {
+    "incremental": true,
+    "target": "es2022",
     "baseUrl": "./",
-    "outDir": "dist"
-    // TypeScript paths are not properly supported by Forge UI Kit.
-    // See: https://ecosystem.atlassian.net/browse/FRGE-1617
+    "outDir": "dist",
+    "lib": [
+      "es2022",
+      "dom",
+      "dom.iterable"
+    ],
+    "jsx": "react-jsx",
+    "moduleDetection": "force",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true
   },
-  "include": ["src"],
-  "exclude": ["dist", "node_modules"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
 }
+

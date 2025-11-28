@@ -12,9 +12,17 @@ modules:
 resources:
   - key: main
     path: src/frontend/index.jsx
+
 app:
+  # Preview Multi-app support
   runtime:
     name: nodejs22.x
     memoryMB: 256
     architecture: arm64
   id: ari:cloud:ecosystem::app/c2decf0d-0aa0-4ac9-bc64-4e3fb6d21205
+  compatibility:
+    confluence:
+      required: false
+    jira:
+      required: true
+
