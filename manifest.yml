@@ -6,9 +6,38 @@ modules:
         function: resolver
       render: native
       title: adf-importer
+
   function:
     - key: resolver
       handler: index.handler
+
+    - key: handleCommentAdded
+      handler: index.handleEvent
+
+    - key: handleAttachmentAdded
+      handler: index.handleEvent
+
+  trigger:
+    - key: issue-comment-added
+      function: handleCommentAdded
+      events:
+        - avi:jira:commented:issue
+      filter:
+        ignoreSelf: true
+        onError: RECEIVE_AND_LOG
+
+    - key: issue-attachment-added
+      function: handleAttachmentAdded
+      events:
+        - avi:jira:created:attachment
+      filter:
+        ignoreSelf: true
+        onError: RECEIVE_AND_LOG
+
+permissions:
+  scopes:
+    - "read:jira-work"
+
 resources:
   - key: main
     path: src/frontend/index.jsx

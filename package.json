@@ -11,13 +11,14 @@
     "typecheck:watch": "tsc --noEmit --watch",
     "test": "vitest run --passWithNoTests",
     "configure": "forge settings set usage-analytics false",
-    "deploy:dev": " forge deploy",
+    "deploy:dev": "pnpm run configure && forge deploy",
     "deploy:stage": "pnpm run configure && npm run manifest:stage && forge deploy --environment staging --non-interactive",
     "deploy:prod": "pnpm run configure && npm run manifest:prod && forge deploy --environment production --non-interactive",
     "install:stage": " forge install --confirm-scopes  --environment staging --license active",
     "install:dev": " forge install --confirm-scopes --license active",
     "uninstall:dev": " forge uninstall ",
-    "upgrade:dev": " forge install --upgrade --confirm-scopes --license active"
+    "upgrade:dev": " forge install --upgrade --confirm-scopes --license active",
+    "tunnel:dev": "npm run manifest:dev && forge tunnel"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.8",
