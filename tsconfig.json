@@ -1,0 +1,11 @@
+{
+  "extends": "@requirementyogi/typescript-config/ui-kit",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "dist"
+    // TypeScript paths are not properly supported by Forge UI Kit.
+    // See: https://ecosystem.atlassian.net/browse/FRGE-1617
+  },
+  "include": ["src"],
+  "exclude": ["dist", "node_modules"]
+}
