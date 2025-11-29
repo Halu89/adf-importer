@@ -37,6 +37,6 @@ export const createPage = async (pageData: CreatePageData) => {
             return data;
         }
     } catch (e: unknown) {
-        logger.error("Error fetching attachment", e);
+        logger.error("Error creating page", e);
     }
 };

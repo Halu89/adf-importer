@@ -11,6 +11,11 @@ export const getAttachment = async (id: string | number) => {
                 route`/rest/api/3/attachment/content/${encodeURIComponent(id)}`,
             );
 
+        if (!response.ok) {
+            logger.error(`Failed to fetch attachment: ${id}`, response);
+            throw new Error(`Failed to fetch attachment: ${id}`);
+        }
+
         logger.debug(`Successfully retrieved attachment: `, id);
 
         return response.text();

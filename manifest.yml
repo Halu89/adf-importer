@@ -25,7 +25,8 @@ modules:
 
 permissions:
   scopes:
-    - "read:jira-work"
+    - "read:jira-work" # Read events and attachments from Jira issues
+    - "write:page:confluence" # Create pages in Confluence
 
 resources:
   - key: main
