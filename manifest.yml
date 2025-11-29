@@ -11,21 +11,10 @@ modules:
     - key: resolver
       handler: index.handler
 
-    - key: handleCommentAdded
-      handler: index.handleEvent
-
     - key: handleAttachmentAdded
-      handler: index.handleEvent
+      handler: index.handleAttachmentAdded
 
   trigger:
-    - key: issue-comment-added
-      function: handleCommentAdded
-      events:
-        - avi:jira:commented:issue
-      filter:
-        ignoreSelf: true
-        onError: RECEIVE_AND_LOG
-
     - key: issue-attachment-added
       function: handleAttachmentAdded
       events:

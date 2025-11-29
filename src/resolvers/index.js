@@ -8,16 +8,4 @@ resolver.define("getText", (req) => {
     return "Hello, world!";
 });
 
-resolver.define("issue-comment-added", (event) => {
-        console.log(event);
-        return;
-    }
-)
-
-resolver.define("issue-attachment-added", (event) => {
-        console.log(event);
-        return;
-    }
-)
-
 export const handler = resolver.getDefinitions();

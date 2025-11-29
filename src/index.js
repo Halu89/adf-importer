@@ -1,3 +1,3 @@
 export { handler } from "./resolvers";
 
-export { handleEvent } from "./events";
+export { handleAttachmentAdded } from "./events/handleAttachmentAdded";
