@@ -1,0 +1,6 @@
+ignoredBuiltDependencies:
+  - cloudflared
+  - keytar
+
+onlyBuiltDependencies:
+  - '@forge/cli'

@@ -14,6 +14,38 @@ interface CreatePageData {
     body: PageBody;
 }
 
+/**
+ *
+ * @export
+ * @interface CreatePage200Response
+ */
+export interface CreatePage200Response {
+    /**
+     * ID of the page.
+     * @type {string}
+     * @memberof CreatePage200Response
+     */
+    id?: string;
+    /**
+     * Title of the page.
+     * @type {string}
+     * @memberof CreatePage200Response
+     */
+    title?: string;
+    /**
+     * ID of the space the page is in.
+     * @type {string}
+     * @memberof CreatePage200Response
+     */
+    spaceId?: string;
+    /**
+     *
+     * @type {GetAttachmentById200ResponseAllOfLinks}
+     * @memberof CreatePage200Response
+     */
+    _links?: { base: string; webui: string };
+}
+
 export const createPage = async (pageData: CreatePageData) => {
     try {
         logger.debug(`Creating page`);
@@ -29,7 +61,7 @@ export const createPage = async (pageData: CreatePageData) => {
                 },
             });
 
-        const data = (await response.json()) as unknown;
+        const data = (await response.json()) as CreatePage200Response;
         if (!response.ok) {
             throw new Error(`Failed to create page: ${JSON.stringify(data)}`);
         } else {
