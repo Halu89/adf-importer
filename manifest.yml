@@ -9,7 +9,7 @@ modules:
 
   jira:issueActivity:
     - key: adf-importer-hello-world-issue-activity
-      resource: main
+      resource: issueActivity
       resolver:
         function: resolver
       render: native
@@ -94,8 +94,8 @@ permissions:
     - "storage:app" # Store references to pages created from attachments
 
 resources:
-  - key: main
-    path: src/frontend/index.jsx
+  - key: issueActivity
+    path: src/frontend/modules/IssueActivityModule.tsx
 
   - key: settings
     path: src/frontend/modules/SettingsModule.tsx
