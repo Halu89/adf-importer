@@ -1,34 +1,35 @@
 import api, { route } from "@forge/api";
+import { z } from "zod";
 import logger from "../logger";
 
-interface PageBody {
-    representation: "storage";
-    value: string;
-}
+const PageBodySchema = z.object({
+    representation: z.literal("storage"),
+    value: z.string(),
+});
 
-interface CreatePageData {
-    spaceId: string;
-    status: "current";
-    title: string;
-    parentId: string;
-    body: PageBody;
-}
+const CreatePageDataSchema = z.object({
+    spaceId: z.string(),
+    status: z.literal("current"),
+    title: z.string(),
+    parentId: z.string(),
+    body: PageBodySchema,
+});
 
-export interface CreatePage200Response {
-    /**
-     * ID of the page.
-     */
-    id?: string;
-    /**
-     * Title of the page.
-     */
-    title?: string;
-    /**
-     * ID of the space the page is in.
-     */
-    spaceId?: string;
-    _links?: { base: string; webui: string };
-}
+type CreatePageData = z.infer<typeof CreatePageDataSchema>;
+
+export const CreatePage200ResponseSchema = z.object({
+    id: z.string(),
+    title: z.string().optional(),
+    spaceId: z.string().optional(),
+    _links: z
+        .object({
+            base: z.string().optional(),
+            webui: z.string().optional(),
+        })
+        .optional(),
+});
+
+export type CreatePage200Response = z.infer<typeof CreatePage200ResponseSchema>;
 
 export const createPage = async (pageData: CreatePageData) => {
     logger.debug(`Creating page`);
@@ -44,16 +45,17 @@ export const createPage = async (pageData: CreatePageData) => {
             },
         });
 
-    const data = (await response.json()) as CreatePage200Response;
-    if (!response.ok) {
+    const data = CreatePage200ResponseSchema.parse(await response.json());
+
+    if (response.ok) {
+        logger.debug(`Successfully created page: `, data);
+        return data;
+    } else {
         logger.error(
             `Failed to create page: ${JSON.stringify(data)}`,
             response,
         );
-        throw new Error(`Failed to create page`);
-    } else {
-        logger.debug(`Successfully created page: `, data);
-        return data;
+        throw new Error(`Failed to create page with status: ${response.status} ${response.statusText}`);
     }
 };
 
@@ -65,10 +67,10 @@ export const deletePage = async (pageId: string | number) => {
             method: "DELETE",
         });
 
-    if (!response.ok) {
-        logger.error(`Failed to delete page: ${pageId}`, response);
-        throw new Error(`Failed to delete page: ${pageId}`);
-    } else {
+    if (response.ok) {
         logger.debug("Successfully deleted page: ", pageId);
+    } else {
+        logger.error(`Failed to delete page: ${pageId}`, response);
+        throw new Error(`Failed to delete page: ${pageId} with status: ${response.status} ${response.statusText}`);
     }
 };

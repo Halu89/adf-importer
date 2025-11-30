@@ -1,4 +1,4 @@
-import api, { route } from "@forge/api";
+import api, {route} from "@forge/api";
 import logger from "../logger";
 
 const createIssueComment = async (
@@ -16,8 +16,12 @@ const createIssueComment = async (
             body: bodyData,
         });
 
-    logger.log(`Response: ${response.status} ${response.statusText}`);
-    logger.log(await response.json());
+    if (response.ok) {
+        logger.debug(`Successfully created comment on issue ${issueIdOrKey}:`);
+    } else {
+        logger.error(`Failed to create comment: `, response, bodyData);
+        throw new Error(`Failed to create comment: ${response.status} ${response.statusText}`);
+    }
 };
 
 export const createInternalComment = async (
@@ -30,7 +34,7 @@ export const createInternalComment = async (
         properties: [
             {
                 key: "sd.public.comment",
-                value: { internal: true },
+                value: {internal: true},
             },
         ],
     };
