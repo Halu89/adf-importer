@@ -35,6 +35,7 @@
     "@forge/kvs": "^1.2.2",
     "@forge/react": "11.8.1",
     "@forge/resolver": "1.7.1",
+    "@tanstack/react-query": "^5.90.11",
     "fast-xml-parser": "^5.3.2",
     "react": "^18.2.0",
     "zod": "3.24.4"

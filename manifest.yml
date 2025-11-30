@@ -1,4 +1,12 @@
 modules:
+  jira:globalPage:
+    - key: settings
+      resource: settings
+      resolver:
+        function: resolver
+      render: native
+      title: ADF Importer settings
+
   jira:issueActivity:
     - key: adf-importer-hello-world-issue-activity
       resource: main
@@ -79,13 +87,18 @@ permissions:
   scopes:
     - "read:jira-work" # Read events and attachments from Jira issues
     - "write:jira-work" # Create comments on Jira issues
+    - "read:space:confluence" # Read space information in Confluence for the configuration
     - "write:page:confluence" # Create pages in Confluence
+    - "search:confluence"
     - "delete:page:confluence" # Delete pages in Confluence for cleanup
     - "storage:app" # Store references to pages created from attachments
 
 resources:
   - key: main
     path: src/frontend/index.jsx
+
+  - key: settings
+    path: src/frontend/modules/SettingsModule.tsx
 
 app:
   # Preview Multi-app support
