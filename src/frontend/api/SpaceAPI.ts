@@ -1,28 +1,11 @@
-import React, {useMemo} from "react";
-import ForgeReconciler, {
-    Box,
-    Button,
-    Form,
-    FormFooter,
-    FormSection,
-    Heading,
-    Label,
-    Select,
-    useForm,
-    xcss
-} from "@forge/react";
-import {QueryClientProvider, queryOptions, useQuery} from "@tanstack/react-query";
-import {queryClient} from "../providers/QueryClientProvider";
-import {makeInvoke, requestConfluence,} from "@forge/bridge";
-import logger from "../../lib/logger";
 import z from "zod";
-import useDebounce from "../hooks/useDebounce";
-import {ResolverDefs} from "../../shared/types";
-import GlobalSettingsEdit from "../features/settings/GlobalSettingsEdit";
+import {queryOptions} from "@tanstack/react-query";
+import {requestConfluence} from "@forge/bridge";
+import logger from "../../lib/logger";
 
 const stringOrNumber = z.union([z.string(), z.number()]);
 
-const SpaceSchema = z.object({
+export const SpaceSchema = z.object({
     id: stringOrNumber,
     key: z.string(),
     name: z.string(),
@@ -35,13 +18,13 @@ const SpaceSchema = z.object({
     }).optional(),
 });
 
-type Space = z.infer<typeof SpaceSchema>;
+export type Space = z.infer<typeof SpaceSchema>;
 
 const MultiSpaceResultSchema = z.object({
     results: z.array(z.object({space: SpaceSchema})),
 })
 
-function searchSpacesByTitle(debouncedKey: string) {
+export function searchSpacesByTitle(debouncedKey: string) {
     return queryOptions({
         queryKey: ["GetSpaces", debouncedKey],
         queryFn: async () => {
@@ -63,20 +46,3 @@ function searchSpacesByTitle(debouncedKey: string) {
     });
 }
 
-const invoke = makeInvoke<ResolverDefs>()
-
-const App = () => {
-
-        return (
-            <GlobalSettingsEdit />
-        );
-    }
-;
-
-ForgeReconciler.render(
-    <React.StrictMode>
-        <QueryClientProvider client={queryClient}>
-            <App/>
-        </QueryClientProvider>
-    </React.StrictMode>,
-);
