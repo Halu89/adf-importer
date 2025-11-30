@@ -16,24 +16,17 @@ import {
     xcss,
 } from "@forge/react";
 import useDebounce from "../../hooks/useDebounce";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import z from "zod";
 import { searchSpacesByTitle } from "../../api/SpaceAPI";
-import { makeInvoke } from "@forge/bridge";
-import { ResolverDefs } from "../../../shared/types";
 import { Space, SpaceSchema } from "../../../lib/schemas";
-
-const invoke = makeInvoke<ResolverDefs>();
+import { saveGlobalSpaceSettings } from "../../api/InternalAPI";
 
 interface GlobalSettingsEditProps {
-    onSubmit: () => void;
     closeModal: () => void;
 }
 
-const GlobalSettingsEdit = ({
-    onSubmit,
-    closeModal,
-}: GlobalSettingsEditProps) => {
+const GlobalSettingsEdit = ({ closeModal }: GlobalSettingsEditProps) => {
     const [key, setKey] = React.useState("");
 
     const { handleSubmit, register, getFieldId } = useForm();
@@ -41,6 +34,14 @@ const GlobalSettingsEdit = ({
     const debouncedKey = useDebounce(key, 300);
 
     const { data: spaces } = useQuery(searchSpacesByTitle(debouncedKey));
+
+    const { mutate: saveGlobalSpace } = useMutation({
+        ...saveGlobalSpaceSettings,
+        onSuccess: (...args) => {
+            saveGlobalSpaceSettings.onSuccess?.(...args);
+            closeModal();
+        },
+    });
 
     const options = useMemo(
         () =>
@@ -50,25 +51,16 @@ const GlobalSettingsEdit = ({
         [spaces],
     );
 
-    const saveSetting = async (data: unknown) => {
-        console.debug("data :>> ", data);
-        try {
-            const parsedInput = SpaceSelectionFormSchema.parse(data);
-            await invoke("saveGlobalSpaceSetting", {
-                space: parsedInput.space.value,
-            });
-            onSubmit();
-        } catch (e: unknown) {
-            console.error("Error parsing form data", e);
-        }
-    };
-
     return (
         <Box
             xcss={xcss({ marginBlock: "space.300", marginInline: "space.500" })}
         >
             <Modal onClose={closeModal}>
-                <Form onSubmit={handleSubmit(saveSetting)}>
+                <Form
+                    onSubmit={handleSubmit((data) => {
+                        saveGlobalSpace(SpaceSchema.parse(data));
+                    })}
+                >
                     <ModalHeader>
                         <ModalTitle>Configure default space</ModalTitle>
                         <Button appearance="subtle" onClick={closeModal}>
@@ -119,9 +111,5 @@ type SpaceOption = z.infer<typeof SpaceOptionSchema>;
 const createOptions = (spaces: Space[]): SpaceOption[] => {
     return spaces.map((space) => ({ label: space.name, value: space }));
 };
-
-const SpaceSelectionFormSchema = z.object({
-    space: SpaceOptionSchema,
-});
 
 export default GlobalSettingsEdit;

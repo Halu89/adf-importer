@@ -1,6 +1,11 @@
 import kvs from "@forge/kvs";
 import z from "zod";
-import { type Space, SpaceSchema } from "../schemas";
+import {
+    PersonalSettings,
+    PersonalSettingsSchema,
+    type Space,
+    SpaceSchema,
+} from "../schemas";
 
 class SettingsRepository {
     readonly #keyPrefix: string = "settings";
@@ -18,24 +23,29 @@ class SettingsRepository {
         return value ? SpaceSchema.parse(JSON.parse(value)) : undefined;
     }
 
-    public async savePersonalSpaceSetting(accountId: string, space: Space) {
-        SpaceSchema.parse(space);
+    public async savePersonalSpaceSetting(
+        accountId: string,
+        settings: PersonalSettings,
+    ) {
+        PersonalSettingsSchema.parse(settings);
         z.string().trim().min(8).parse(accountId);
 
         return await kvs.set(
-            this.getKey("personalSpace", accountId),
-            JSON.stringify(space),
+            this.getKey("personalSettings", accountId),
+            JSON.stringify(settings),
         );
     }
 
     public async getPersonalSpaceSetting(
         accountId: string,
-    ): Promise<Space | undefined> {
+    ): Promise<PersonalSettings | undefined> {
         const value = z
             .string()
             .optional()
             .parse(await kvs.get(this.getKey("personalSpace", accountId)));
-        return value ? SpaceSchema.parse(JSON.parse(value)) : undefined;
+        return value
+            ? PersonalSettingsSchema.parse(JSON.parse(value))
+            : undefined;
     }
 
     private getKey(...args: string[]): string {

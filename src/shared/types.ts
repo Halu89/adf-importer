@@ -1,4 +1,4 @@
-import { Space } from "../lib/schemas";
+import { PersonalSettings, Space } from "../lib/schemas";
 
 export type ResolverDefs = {
     getText: (args: never) => string;
@@ -8,6 +8,6 @@ export type ResolverDefs = {
     saveGlobalSpaceSetting: (args: { space: Space }) => void;
     getGlobalSpaceSetting: () => Space | undefined;
 
-    savePersonalSpaceSetting: (args: { space: Space }) => void;
-    getPersonalSpaceSetting: () => Space | undefined;
+    savePersonalSpaceSetting: (args: { settings: PersonalSettings }) => void;
+    getPersonalSpaceSetting: (args: never) => boolean;
 };

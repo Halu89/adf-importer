@@ -1,7 +1,9 @@
 import { makeResolver } from "@forge/resolver";
 import { ResolverDefs } from "../shared/types";
-import { pageAttachmentLinkRepository } from "../lib/storage";
-import { settingsRepository } from "../lib/storage";
+import {
+    pageAttachmentLinkRepository,
+    settingsRepository,
+} from "../lib/storage";
 import z from "zod";
 import logger from "../lib/logger";
 
@@ -19,6 +21,7 @@ export const handler = makeResolver<ResolverDefs>({
 
         logger.debug("Global space setting saved successfully");
     },
+
     getGlobalSpaceSetting: async (req) => {
         logger.debug("Getting global space setting");
 
@@ -29,9 +32,11 @@ export const handler = makeResolver<ResolverDefs>({
     },
 
     savePersonalSpaceSetting: async (req) => {
+        console.debug("req :>> ", req);
+
         logger.debug(
             "Saving personal space setting: ",
-            req.payload.space,
+            req.payload.settings,
             " for account: ",
             req.context.accountId,
         );
@@ -39,11 +44,14 @@ export const handler = makeResolver<ResolverDefs>({
         const context = ResolverContextSchema.parse(req.context);
         await settingsRepository.savePersonalSpaceSetting(
             context.accountId,
-            req.payload.space,
+            req.payload.settings,
         );
         logger.debug("Personal space setting saved successfully");
     },
 
+    /**
+     * Only returns a boolean indicating whether personal settings exist for the user
+     */
     getPersonalSpaceSetting: async (req) => {
         logger.debug(
             "Getting personal space setting for account: ",
@@ -56,7 +64,7 @@ export const handler = makeResolver<ResolverDefs>({
         );
 
         logger.debug("Personal space setting retrieved successfully");
-        return result;
+        return !!result;
     },
 });
 

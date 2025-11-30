@@ -76,3 +76,18 @@ export type Space = z.infer<typeof SpaceSchema>;
 export const MultiSpaceResultSchema = z.object({
     results: z.array(z.object({ space: SpaceSchema })),
 });
+
+const PersonalCredentialsSchema = z.object({
+    email: z.string(),
+    token: z.string(),
+});
+
+export const PersonalSettingsSchema = z.object({
+    targetInstance: z.string(),
+    authentication: PersonalCredentialsSchema,
+    space: z.object({
+        id: z.string(),
+    }),
+});
+
+export type PersonalSettings = z.infer<typeof PersonalSettingsSchema>;
