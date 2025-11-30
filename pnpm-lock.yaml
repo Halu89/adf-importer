@@ -14,6 +14,9 @@ importers:
       '@forge/bridge':
         specifier: 5.9.1
         version: 5.9.1(@types/react@18.3.27)(react@18.3.1)
+      '@forge/kvs':
+        specifier: ^1.2.2
+        version: 1.2.2
       '@forge/react':
         specifier: 11.8.1
         version: 11.8.1(@babel/core@7.28.5)(eslint@8.57.1)(prop-types@15.8.1)(react-dom@18.3.1(react@18.3.1))
@@ -26,6 +29,9 @@ importers:
       react:
         specifier: ^18.2.0
         version: 18.3.1
+      zod:
+        specifier: 3.24.4
+        version: 3.24.4
     devDependencies:
       '@biomejs/biome':
         specifier: 2.3.8
@@ -712,6 +718,9 @@ packages:
 
   '@forge/i18n@0.0.7':
     resolution: {integrity: sha512-EKrQApcuI4k4AkUSeERkZv1dQaGjWsmB8i7ciDPtpDARPRH1sOrU+FSEOoA7b9FQ15++7Q144m94w/aMLCg5Gg==}
+
+  '@forge/kvs@1.2.2':
+    resolution: {integrity: sha512-kpcOUB2YLJlcYCZklvzgrP4i6O2i45t3RW5eoicGiZMgnWboNKpd3wkKyy4ZyPVxF2aCjeCPS46uuNIIcyWwbg==}
 
   '@forge/lint@5.13.0':
     resolution: {integrity: sha512-DNOvLHnVy3klym+AeR833R9P1jNJEhSY0WH9JDGTW3m/H0LT4E5voRCMWrf5JWnvS0XwC1FgGUVPB0b8M40nPQ==}
@@ -3996,6 +4005,9 @@ packages:
     resolution: {integrity: sha512-zK7YHHz4ZXpW89AHXUPbQVGKI7uvkd3hzusTdotCg1UxyaVtg0zFJSTfW/Dq5f7OBBVnq6cZIaC8Ti4hb6dtCA==}
     engines: {node: '>= 14'}
 
+  zod@3.24.4:
+    resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
+
 snapshots:
 
   '@atlaskit/adf-schema@48.0.0(react@18.3.1)':
@@ -5588,6 +5600,10 @@ snapshots:
   '@forge/i18n@0.0.7':
     dependencies:
       lodash: 4.17.21
+
+  '@forge/kvs@1.2.2':
+    dependencies:
+      '@forge/api': 6.4.0
 
   '@forge/lint@5.13.0(@types/node@24.10.1)(cheerio@1.1.2)(typescript@4.8.4)':
     dependencies:
@@ -9266,3 +9282,5 @@ snapshots:
       archiver-utils: 5.0.2
       compress-commons: 6.0.2
       readable-stream: 4.7.0
+
+  zod@3.24.4: {}

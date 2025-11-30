@@ -1,4 +1,4 @@
-import api, { route } from "@forge/api";
+import api, {route} from "@forge/api";
 import logger from "../logger";
 
 interface PageBody {
@@ -14,35 +14,19 @@ interface CreatePageData {
     body: PageBody;
 }
 
-/**
- *
- * @export
- * @interface CreatePage200Response
- */
 export interface CreatePage200Response {
     /**
      * ID of the page.
-     * @type {string}
-     * @memberof CreatePage200Response
      */
     id?: string;
     /**
      * Title of the page.
-     * @type {string}
-     * @memberof CreatePage200Response
      */
     title?: string;
     /**
      * ID of the space the page is in.
-     * @type {string}
-     * @memberof CreatePage200Response
      */
     spaceId?: string;
-    /**
-     *
-     * @type {GetAttachmentById200ResponseAllOfLinks}
-     * @memberof CreatePage200Response
-     */
     _links?: { base: string; webui: string };
 }
 

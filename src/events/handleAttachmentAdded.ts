@@ -7,6 +7,7 @@ import {
 import logger from "../lib/logger";
 import { StorageFormatValidator } from "../lib/PageValidator";
 import { createInternalComment } from "../lib/jira-api/IssueCommentAPI";
+import {pageStorage} from "../lib/storage";
 
 interface Attachment {
     id: string;
@@ -65,10 +66,14 @@ export async function handleAttachmentAdded(
                 `Successfully created page for attachment: ${event.attachment.id}\n${JSON.stringify(page, null, 2)}`,
             );
 
-            await createInternalComment(
-                event.attachment.issueId,
-                createLinkToPage(pageUrl(page)),
-            );
+            if (page?.id) {
+                await pageStorage.savePage({attachmentId: event.attachment.id, issueId: event.attachment.issueId, pageId: page?.id})
+                await createInternalComment(
+                    event.attachment.issueId,
+                    createLinkToPage(pageUrl(page)),
+                );
+            }
+
             logger.log(
                 `Successfully created comment for attachment: ${event.attachment.id}`,
             );
