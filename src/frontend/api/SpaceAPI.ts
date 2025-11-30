@@ -2,27 +2,7 @@ import z from "zod";
 import {queryOptions} from "@tanstack/react-query";
 import {requestConfluence} from "@forge/bridge";
 import logger from "../../lib/logger";
-
-const stringOrNumber = z.union([z.string(), z.number()]);
-
-export const SpaceSchema = z.object({
-    id: stringOrNumber,
-    key: z.string(),
-    name: z.string(),
-    status: z.string(),
-    icon: z.object({
-        path: z.string(),
-    }).optional().nullable(),
-    homepage: z.object({
-        id: stringOrNumber
-    }).optional(),
-});
-
-export type Space = z.infer<typeof SpaceSchema>;
-
-const MultiSpaceResultSchema = z.object({
-    results: z.array(z.object({space: SpaceSchema})),
-})
+import {MultiSpaceResultSchema} from "../../lib/schemas";
 
 export function searchSpacesByTitle(debouncedKey: string) {
     return queryOptions({

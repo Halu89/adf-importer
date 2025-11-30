@@ -1,6 +1,6 @@
-import {Space, SpaceSchema} from "../../frontend/api/SpaceAPI";
 import kvs from "@forge/kvs";
 import z from "zod";
+import {type Space, SpaceSchema} from "../schemas";
 
 class SettingsRepository {
     readonly #keyPrefix: string = "settings";

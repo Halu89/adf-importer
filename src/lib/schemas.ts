@@ -50,3 +50,25 @@ export const AttachmentSchema = z.object({
     createDate: z.string(),
     author: UserSchema.optional(),
 });
+
+export const stringOrNumber = z.union([z.string(), z.number()]);
+
+export const SpaceSchema = z.object({
+    id: stringOrNumber,
+    key: z.string(),
+    name: z.string(),
+    status: z.string(),
+    icon: z.object({
+        path: z.string(),
+    }).optional().nullable(),
+    homepage: z.object({
+        id: stringOrNumber
+    }).optional(),
+});
+
+export type Space = z.infer<typeof SpaceSchema>;
+
+export const MultiSpaceResultSchema = z.object({
+    results: z.array(z.object({space: SpaceSchema})),
+})
+

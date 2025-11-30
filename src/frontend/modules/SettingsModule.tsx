@@ -1,74 +1,12 @@
-import React, {useMemo} from "react";
-import ForgeReconciler, {
-    Box,
-    Button,
-    Form,
-    FormFooter,
-    FormSection,
-    Heading,
-    Label,
-    Select,
-    useForm,
-    xcss
-} from "@forge/react";
-import {QueryClientProvider, queryOptions, useQuery} from "@tanstack/react-query";
+import React from "react";
+import ForgeReconciler from "@forge/react";
+import {QueryClientProvider} from "@tanstack/react-query";
 import {queryClient} from "../providers/QueryClientProvider";
-import {makeInvoke, requestConfluence,} from "@forge/bridge";
-import logger from "../../lib/logger";
-import z from "zod";
-import useDebounce from "../hooks/useDebounce";
-import {ResolverDefs} from "../../shared/types";
 import GlobalSettingsEdit from "../features/settings/GlobalSettingsEdit";
 
-const stringOrNumber = z.union([z.string(), z.number()]);
-
-const SpaceSchema = z.object({
-    id: stringOrNumber,
-    key: z.string(),
-    name: z.string(),
-    status: z.string(),
-    icon: z.object({
-        path: z.string(),
-    }).optional().nullable(),
-    homepage: z.object({
-        id: stringOrNumber
-    }).optional(),
-});
-
-type Space = z.infer<typeof SpaceSchema>;
-
-const MultiSpaceResultSchema = z.object({
-    results: z.array(z.object({space: SpaceSchema})),
-})
-
-function searchSpacesByTitle(debouncedKey: string) {
-    return queryOptions({
-        queryKey: ["GetSpaces", debouncedKey],
-        queryFn: async () => {
-            const titleSearchResults = await requestConfluence(`/wiki/rest/api/search?limit=20&expand=space.homepage&cql=type=space+AND+title~"${encodeURIComponent(debouncedKey)}*"`, {
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-
-            if (titleSearchResults.ok) {
-                try {
-                    return MultiSpaceResultSchema.parse(await titleSearchResults.json());
-                } catch (e: unknown) {
-                    logger.error("Unable to parse spaces response", e)
-                    throw new Error("Unable to parse spaces response")
-                }
-            }
-        },
-    });
-}
-
-const invoke = makeInvoke<ResolverDefs>()
-
 const App = () => {
-
         return (
-            <GlobalSettingsEdit />
+            <GlobalSettingsEdit/>
         );
     }
 ;

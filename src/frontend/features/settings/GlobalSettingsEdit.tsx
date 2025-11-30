@@ -3,9 +3,10 @@ import {Box, Button, Form, FormFooter, FormSection, Heading, Label, Select, useF
 import useDebounce from "../../hooks/useDebounce";
 import {useQuery} from "@tanstack/react-query";
 import z from "zod";
-import {searchSpacesByTitle, type Space, SpaceSchema} from "../../api/SpaceAPI";
+import {searchSpacesByTitle} from "../../api/SpaceAPI";
 import {makeInvoke} from "@forge/bridge";
 import {ResolverDefs} from "../../../shared/types";
+import {Space, SpaceSchema} from "../../../lib/schemas";
 
 const invoke = makeInvoke<ResolverDefs>()
 
