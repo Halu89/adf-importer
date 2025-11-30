@@ -1,33 +1,6 @@
 import api, { route } from "@forge/api";
 import logger from "../logger";
 
-var bodyData = {
-    body: {
-        content: [
-            {
-                content: [
-                    {
-                        text: "ADF imported",
-                        type: "text",
-                    },
-                ],
-                type: "paragraph",
-            },
-        ],
-        type: "doc",
-        version: 1,
-    },
-    visibility: null,
-
-    // Create an internal comment
-    properties: [
-        {
-            key: "sd.public.comment",
-            value: { internal: true },
-        },
-    ],
-};
-
 const createIssueComment = async (
     issueIdOrKey: string | number,
     bodyData: string,

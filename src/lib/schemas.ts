@@ -9,13 +9,15 @@ export const IssueSchema = z.object({
     }),
 });
 
+export type Issue = z.infer<typeof IssueSchema>;
+
 const ChangeSchema = z.object({
     field: z.string(),
     fieldId: z.string(),
-    from: z.string().optional(),
-    to: z.string().optional(),
-    fromString: z.string().optional(),
-    toString: z.string().optional(),
+    from: z.string().optional().nullable(),
+    to: z.string().optional().nullable(),
+    fromString: z.string().optional().nullable(),
+    toString: z.string().optional().nullable(),
 });
 
 export const StatusSchema = z.object({

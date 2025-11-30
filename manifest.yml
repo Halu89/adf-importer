@@ -62,6 +62,7 @@ permissions:
     - "read:jira-work" # Read events and attachments from Jira issues
     - "write:jira-work" # Create comments on Jira issues
     - "write:page:confluence" # Create pages in Confluence
+    - "delete:page:confluence" # Delete pages in Confluence for cleanup
     - "storage:app" # Store references to pages created from attachments
 
 resources:

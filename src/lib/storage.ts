@@ -26,10 +26,25 @@ class PageStorage {
         }
     }
 
-    async getPage(issueId: string | number, pageId: string | number) {
-        const value = await kvs.get(this.getKey(issueId, pageId));
+    async getPage(issueId: string | number, attachmentId: string | number) {
+        const value = z
+            .string()
+            .optional()
+            .parse(await kvs.get(this.getKey(issueId, attachmentId)));
 
-        return value ? PageAttachmentLinkSchema.parse(value) : undefined;
+        return value
+            ? PageAttachmentLinkSchema.parse(JSON.parse(value))
+            : undefined;
+    }
+
+    async deletePage(issueId: string | number, pageId: string | number) {
+        const cacheKey = this.getKey(issueId, pageId);
+        logger.debug(`Deleting kvs entry: ${cacheKey}`);
+
+        return kvs.delete(cacheKey).catch((e: unknown) => {
+            logger.error(`Unable to delete kvs entry ${cacheKey}`, e);
+            throw e;
+        });
     }
 
     async getPages(issueId: string | number) {

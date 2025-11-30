@@ -1,6 +1,7 @@
 import z from "zod";
 import logger from "../lib/logger";
 import { IssueSchema, UserSchema } from "../lib/schemas";
+import { cleanupAll } from "../lib/CleanupService";
 
 const IssueDeletedEventSchema = z.object({
     eventType: z.literal("avi:jira:deleted:issue"),
@@ -9,12 +10,13 @@ const IssueDeletedEventSchema = z.object({
     associatedUsers: z.array(UserSchema).optional(),
 });
 
-export function handleIssueDeleted(event: unknown, _context: unknown) {
+export async function handleIssueDeleted(event: unknown, _context: unknown) {
     try {
+        logger.debug("Parsing issue deleted event");
         const parsed = IssueDeletedEventSchema.parse(event);
 
-        logger.log(
-            `Event received: ${parsed.eventType}\n${JSON.stringify(parsed, null, 2)}`,
+        await cleanupAll(parsed.issue.id).catch((e: unknown) =>
+            logger.error("Error cleaning up issue", e),
         );
     } catch (e: unknown) {
         logger.error("Error parsing event", e);
