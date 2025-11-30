@@ -1,6 +1,6 @@
 import kvs from "@forge/kvs";
 import z from "zod";
-import {type Space, SpaceSchema} from "../schemas";
+import { type Space, SpaceSchema } from "../schemas";
 
 class SettingsRepository {
     readonly #keyPrefix: string = "settings";
@@ -11,7 +11,10 @@ class SettingsRepository {
     }
 
     public async getGlobalSetting(): Promise<Space | undefined> {
-        const value = z.string().optional().parse(await kvs.get(this.getKey("globalSpace")));
+        const value = z
+            .string()
+            .optional()
+            .parse(await kvs.get(this.getKey("globalSpace")));
         return value ? SpaceSchema.parse(JSON.parse(value)) : undefined;
     }
 
@@ -19,16 +22,23 @@ class SettingsRepository {
         SpaceSchema.parse(space);
         z.string().trim().min(8).parse(accountId);
 
-        return await kvs.set(this.getKey("personalSpace", accountId), JSON.stringify(space));
+        return await kvs.set(
+            this.getKey("personalSpace", accountId),
+            JSON.stringify(space),
+        );
     }
 
-    public async getPersonalSpaceSetting(accountId: string): Promise<Space | undefined> {
-        const value = z.string().optional().parse(await kvs.get(this.getKey("personalSpace", accountId)));
+    public async getPersonalSpaceSetting(
+        accountId: string,
+    ): Promise<Space | undefined> {
+        const value = z
+            .string()
+            .optional()
+            .parse(await kvs.get(this.getKey("personalSpace", accountId)));
         return value ? SpaceSchema.parse(JSON.parse(value)) : undefined;
     }
 
-
-    private getKey(...args: (string)[]): string {
+    private getKey(...args: string[]): string {
         return [this.#keyPrefix, ...args].join("-");
     }
 }

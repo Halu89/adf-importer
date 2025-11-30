@@ -58,17 +58,21 @@ export const SpaceSchema = z.object({
     key: z.string(),
     name: z.string(),
     status: z.string(),
-    icon: z.object({
-        path: z.string(),
-    }).optional().nullable(),
-    homepage: z.object({
-        id: stringOrNumber
-    }).optional(),
+    icon: z
+        .object({
+            path: z.string(),
+        })
+        .optional()
+        .nullable(),
+    homepage: z
+        .object({
+            id: stringOrNumber,
+        })
+        .optional(),
 });
 
 export type Space = z.infer<typeof SpaceSchema>;
 
 export const MultiSpaceResultSchema = z.object({
-    results: z.array(z.object({space: SpaceSchema})),
-})
-
+    results: z.array(z.object({ space: SpaceSchema })),
+});

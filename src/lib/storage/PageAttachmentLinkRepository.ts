@@ -1,7 +1,7 @@
 import z from "zod";
-import kvs, {WhereConditions} from "@forge/kvs";
+import kvs, { WhereConditions } from "@forge/kvs";
 import logger from "../logger";
-import {stringOrNumber} from "../schemas";
+import { stringOrNumber } from "../schemas";
 
 const PageAttachmentLinkSchema = z.object({
     pageId: z.string(),

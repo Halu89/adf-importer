@@ -1,4 +1,4 @@
-import {Space} from "../lib/schemas";
+import { Space } from "../lib/schemas";
 
 export type ResolverDefs = {
     getText: (args: never) => string;
@@ -10,5 +10,4 @@ export type ResolverDefs = {
 
     savePersonalSpaceSetting: (args: { space: Space }) => void;
     getPersonalSpaceSetting: () => Space | undefined;
-
 };
