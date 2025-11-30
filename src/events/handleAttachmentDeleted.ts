@@ -13,6 +13,7 @@ export async function handleAttachmentDeleted(
     _context: unknown,
 ) {
     try {
+        logger.debug("Parsing attachment deleted event");
         const parsed = AttachmentDeletedEventSchema.parse(event);
         logger.log(`Event received: ${parsed.eventType}`);
 

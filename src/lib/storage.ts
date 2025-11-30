@@ -10,7 +10,7 @@ const PageAttachmentLinkSchema = z.object({
 
 type PageAttachmentLink = z.infer<typeof PageAttachmentLinkSchema>;
 
-class PageStorage {
+class PageAttachmentLinkRepository {
     private readonly keyPrefix: string = "pageStorage";
 
     async savePage(params: PageAttachmentLink) {
@@ -54,7 +54,7 @@ class PageStorage {
         const value = await kvs
             .query()
             .where("key", WhereConditions.beginsWith(queryKey))
-            .limit(10)
+            .limit(50)
             .getMany();
 
         if (!value) return [];
@@ -68,10 +68,9 @@ class PageStorage {
             )
             .parse(value.results);
 
-        const pages = validatedResults.map((json) =>
+        return validatedResults.map((json) =>
             PageAttachmentLinkSchema.parse(JSON.parse(json.value)),
         );
-        return pages;
     }
 
     private getKey(...args: (string | number)[]): string {
@@ -102,4 +101,4 @@ class InvalidStorageKeyError extends Error {
 
 const stringOrNumber = z.union([z.string(), z.number()]);
 
-export const pageStorage = new PageStorage();
+export const pageAttachmentLinkRepository = new PageAttachmentLinkRepository();

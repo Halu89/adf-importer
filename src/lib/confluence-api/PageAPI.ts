@@ -55,7 +55,9 @@ export const createPage = async (pageData: CreatePageData) => {
             `Failed to create page: ${JSON.stringify(data)}`,
             response,
         );
-        throw new Error(`Failed to create page with status: ${response.status} ${response.statusText}`);
+        throw new Error(
+            `Failed to create page with status: ${response.status} ${response.statusText}`,
+        );
     }
 };
 
@@ -71,6 +73,8 @@ export const deletePage = async (pageId: string | number) => {
         logger.debug("Successfully deleted page: ", pageId);
     } else {
         logger.error(`Failed to delete page: ${pageId}`, response);
-        throw new Error(`Failed to delete page: ${pageId} with status: ${response.status} ${response.statusText}`);
+        throw new Error(
+            `Failed to delete page: ${pageId} with status: ${response.status} ${response.statusText}`,
+        );
     }
 };

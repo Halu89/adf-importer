@@ -7,7 +7,7 @@ import {
 import logger from "../lib/logger";
 import { StorageFormatValidator } from "../lib/PageValidator";
 import { createInternalComment } from "../lib/jira-api/IssueCommentAPI";
-import { pageStorage } from "../lib/storage";
+import { pageAttachmentLinkRepository } from "../lib/storage";
 import { AttachmentSchema } from "../lib/schemas";
 
 const AttachmentEventSchema = z.object({
@@ -20,8 +20,8 @@ type Attachment = z.infer<typeof AttachmentSchema>;
 export async function handleAttachmentAdded(event: unknown, _context: unknown) {
     let parsed: z.infer<typeof AttachmentEventSchema>;
     try {
+        logger.debug("Parsing attachment added event");
         parsed = AttachmentEventSchema.parse(event);
-        logger.log(`Event received: ${parsed.eventType}\n`, event);
     } catch (e: unknown) {
         logger.error("Error parsing event", e);
         throw e;
@@ -31,6 +31,7 @@ export async function handleAttachmentAdded(event: unknown, _context: unknown) {
         parsed.attachment.mimeType === "text/plain" ||
         parsed.attachment.mimeType === "binary/octet-stream"
     ) {
+        logger.debug("Attachment is a text file, proceeding to process it");
         const resp = await getAttachment(parsed.attachment.id);
 
         if (StorageFormatValidator.instance.validatePage(resp)) {
@@ -43,7 +44,7 @@ export async function handleAttachmentAdded(event: unknown, _context: unknown) {
             );
 
             if (page?.id) {
-                await pageStorage.savePage({
+                await pageAttachmentLinkRepository.savePage({
                     attachmentId: parsed.attachment.id,
                     issueId: parsed.attachment.issueId,
                     pageId: page?.id,

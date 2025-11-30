@@ -30,6 +30,9 @@ modules:
         - avi:jira:created:attachment
       filter:
         ignoreSelf: true
+        expression: |
+          event.attachment.mimeType == "text/plain"
+          || event.attachment.mimeType == "binary/octet-stream"
         onError: RECEIVE_AND_LOG
 
     - key: issue-attachment-deleted
@@ -38,6 +41,9 @@ modules:
         - avi:jira:deleted:attachment
       filter:
         ignoreSelf: true
+        expression: |
+          event.attachment.mimeType == "text/plain"
+          || event.attachment.mimeType == "binary/octet-stream"
         onError: RECEIVE_AND_LOG
 
     - key: issue-deleted
@@ -54,6 +60,18 @@ modules:
         - avi:jira:updated:issue
       filter:
         ignoreSelf: true
+        # Check if the update includes a status change to Resolved
+        expression: |
+          try {
+             return event.changelog.items
+                .reduce(
+                    (acc, changelogItem) => changelogItem.field == "status" && changelogItem.toString?.includes("Resolved") 
+                  ? acc + 1 
+                  : acc,
+                0) > 0
+          } catch (e) {
+            throw `Unexpected error: "${e.location}" - ${e.message}.`;
+          }
         onError: RECEIVE_AND_LOG
 
 

@@ -1,4 +1,4 @@
-import { XMLParser, XMLValidator } from "fast-xml-parser";
+import { XMLValidator} from "fast-xml-parser";
 import logger from "./logger";
 
 interface PageValidator {
@@ -6,8 +6,8 @@ interface PageValidator {
 }
 
 export class StorageFormatValidator implements PageValidator {
-    #validator: (typeof XMLValidator)["validate"];
-    #logger: Console;
+    readonly #validator: (typeof XMLValidator)["validate"];
+    readonly #logger: Console;
 
     public static instance = new StorageFormatValidator();
 
@@ -20,24 +20,22 @@ export class StorageFormatValidator implements PageValidator {
      * Validate the page is in storage format by trying to parse the XML
      */
     validatePage(page: unknown): page is string {
+        this.#logger.debug("Validating page format");
+
         if (typeof page !== "string") {
             this.#logger.error("Invalid document format, expected string");
             return false;
         }
 
-        try {
-            const result = this.#validator(page, {
-                allowBooleanAttributes: true,
-            });
-            if (result !== true) {
-                throw result;
-            }
-            return true;
-        } catch (e: unknown) {
-            this.#logger.error(
-                "Invalid document format, unable to parse XML",
-                e,
-            );
+        const result = this.#validator(page, {
+            allowBooleanAttributes: true,
+        });
+
+        if (result === true) {
+            this.#logger.debug("Page format valid");
+            return true
+        } else {
+            this.#logger.error("Invalid document format, XML validation failed", result);
             return false;
         }
     }

@@ -1,4 +1,4 @@
-import { pageStorage } from "./storage";
+import { pageAttachmentLinkRepository } from "./storage";
 import { deletePage } from "./confluence-api/PageAPI";
 import logger from "./logger";
 
@@ -10,11 +10,14 @@ export async function cleanup(
         `Starting cleanup for issue ${issueId} and attachment ${attachmentId}`,
     );
 
-    const details = await pageStorage.getPage(issueId, attachmentId);
+    const details = await pageAttachmentLinkRepository.getPage(
+        issueId,
+        attachmentId,
+    );
     logger.debug(`Details for cleanup: `, details);
     if (details) {
         await deletePage(details.pageId);
-        await pageStorage.deletePage(issueId, details.pageId);
+        await pageAttachmentLinkRepository.deletePage(issueId, details.pageId);
     } else {
         logger.debug("No cleanup required for attachment:", attachmentId);
     }
@@ -23,7 +26,7 @@ export async function cleanup(
 export async function cleanupAll(issueId: string | number) {
     logger.debug(`Starting cleanup for issue ${issueId}`);
 
-    const pages = await pageStorage.getPages(issueId);
+    const pages = await pageAttachmentLinkRepository.getPages(issueId);
 
     const cleanupResults = await Promise.allSettled(
         pages.map((page) => cleanup(issueId, page.attachmentId)),
