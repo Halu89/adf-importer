@@ -14,6 +14,15 @@ modules:
     - key: handleAttachmentAdded
       handler: index.handleAttachmentAdded
 
+    - key: handleAttachmentDeleted
+      handler: index.handleAttachmentDeleted
+
+    - key: handleIssueDeleted
+      handler: index.handleIssueDeleted
+
+    - key: handleIssueUpdated
+      handler: index.handleIssueUpdated
+
   trigger:
     - key: issue-attachment-added
       function: handleAttachmentAdded
@@ -22,6 +31,31 @@ modules:
       filter:
         ignoreSelf: true
         onError: RECEIVE_AND_LOG
+
+    - key: issue-attachment-deleted
+      function: handleAttachmentDeleted
+      events:
+        - avi:jira:deleted:attachment
+      filter:
+        ignoreSelf: true
+        onError: RECEIVE_AND_LOG
+
+    - key: issue-deleted
+      function: handleIssueDeleted
+      events:
+        - avi:jira:deleted:issue
+      filter:
+        ignoreSelf: true
+        onError: RECEIVE_AND_LOG
+
+    - key: issue-updated
+      function: handleIssueUpdated
+      events:
+        - avi:jira:updated:issue
+      filter:
+        ignoreSelf: true
+        onError: RECEIVE_AND_LOG
+
 
 permissions:
   scopes:

@@ -1,5 +1,5 @@
-import { LicenseDetails } from "@forge/bridge/out/types";
 import { getAttachment } from "../lib/jira-api/AttachmentApi";
+import z from "zod";
 import {
     createPage,
     CreatePage200Response,
@@ -7,82 +7,62 @@ import {
 import logger from "../lib/logger";
 import { StorageFormatValidator } from "../lib/PageValidator";
 import { createInternalComment } from "../lib/jira-api/IssueCommentAPI";
-import {pageStorage} from "../lib/storage";
+import { pageStorage } from "../lib/storage";
+import { AttachmentSchema } from "../lib/schemas";
 
-interface Attachment {
-    id: string;
-    issueId: string;
-    fileName: string;
-    createDate: string;
-    size: string;
-    mimeType: string;
-    author?: User;
-}
+const AttachmentEventSchema = z.object({
+    eventType: z.literal("avi:jira:created:attachment"),
+    attachment: AttachmentSchema,
+});
 
-interface User {
-    accountId: string;
-}
+type Attachment = z.infer<typeof AttachmentSchema>;
 
-interface AttachmentEvent {
-    eventType: "avi:jira:created:attachment";
-    /**
-     * The Jira account ID of the user who created the attachment.
-     */
-    atlassianId: string;
-    attachment: Attachment;
-}
-
-interface RemoteContext {
-    license: LicenseDetails;
-    installContext: string;
-    installation: {
-        ari: {
-            installationId: string;
-        };
-        contexts: [
-            {
-                cloudId: string;
-                workspaceId: string;
-            },
-        ];
-    };
-}
-
-export async function handleAttachmentAdded(
-    event: AttachmentEvent,
-    context: RemoteContext,
-) {
-    logger.log(`Event received: ${event.eventType}\n`, event);
+export async function handleAttachmentAdded(event: unknown, _context: unknown) {
+    let parsed: z.infer<typeof AttachmentEventSchema>;
+    try {
+        parsed = AttachmentEventSchema.parse(event);
+        logger.log(`Event received: ${parsed.eventType}\n`, event);
+    } catch (e: unknown) {
+        logger.error("Error parsing event", e);
+        throw e;
+    }
 
     if (
-        event.attachment.mimeType === "text/plain" ||
-        event.attachment.mimeType === "binary/octet-stream"
+        parsed.attachment.mimeType === "text/plain" ||
+        parsed.attachment.mimeType === "binary/octet-stream"
     ) {
-        const resp = await getAttachment(event.attachment.id);
+        const resp = await getAttachment(parsed.attachment.id);
 
         if (StorageFormatValidator.instance.validatePage(resp)) {
-            const page = await createPageFromAttachment(event.attachment, resp);
+            const page = await createPageFromAttachment(
+                parsed.attachment,
+                resp,
+            );
             logger.log(
-                `Successfully created page for attachment: ${event.attachment.id}\n${JSON.stringify(page, null, 2)}`,
+                `Successfully created page for attachment: ${parsed.attachment.id}\n${JSON.stringify(page, null, 2)}`,
             );
 
             if (page?.id) {
-                await pageStorage.savePage({attachmentId: event.attachment.id, issueId: event.attachment.issueId, pageId: page?.id})
+                await pageStorage.savePage({
+                    attachmentId: parsed.attachment.id,
+                    issueId: parsed.attachment.issueId,
+                    pageId: page?.id,
+                });
                 await createInternalComment(
-                    event.attachment.issueId,
+                    parsed.attachment.issueId,
                     createLinkToPage(pageUrl(page)),
                 );
             }
 
             logger.log(
-                `Successfully created comment for attachment: ${event.attachment.id}`,
+                `Successfully created comment for attachment: ${parsed.attachment.id}`,
             );
         } else {
             logger.log("Ignoring attachment: Invalid document format");
         }
     } else {
         logger.log(
-            `Ignoring attachment: ${event.attachment.id} as it is not a text file`,
+            `Ignoring attachment: ${parsed.attachment.id} as it is not a text file`,
         );
     }
 }

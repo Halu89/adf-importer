@@ -1,4 +1,4 @@
-import api, {route} from "@forge/api";
+import api, { route } from "@forge/api";
 import logger from "../logger";
 
 interface PageBody {
