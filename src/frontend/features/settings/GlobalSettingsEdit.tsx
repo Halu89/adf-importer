@@ -1,5 +1,20 @@
 import React, {useMemo} from "react";
-import {Box, Button, Form, FormFooter, FormSection, Heading, Label, Select, useForm, xcss} from "@forge/react";
+import {
+    Box,
+    Button,
+    Form,
+    FormFooter,
+    Inline,
+    Label,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
+    ModalTitle,
+    Select,
+    useForm,
+    xcss
+} from "@forge/react";
 import useDebounce from "../../hooks/useDebounce";
 import {useQuery} from "@tanstack/react-query";
 import z from "zod";
@@ -10,7 +25,12 @@ import {Space, SpaceSchema} from "../../../lib/schemas";
 
 const invoke = makeInvoke<ResolverDefs>()
 
-const GlobalSettingsEdit = () => {
+interface GlobalSettingsEditProps {
+    onSubmit: () => void;
+    closeModal: () => void;
+}
+
+const GlobalSettingsEdit = ({onSubmit, closeModal}: GlobalSettingsEditProps) => {
     const [key, setKey] = React.useState("");
 
     const {handleSubmit, register, getFieldId} = useForm();
@@ -22,35 +42,54 @@ const GlobalSettingsEdit = () => {
     const options = useMemo(() => createOptions(spaces?.results.map(searchItem => searchItem.space) || []), [spaces]);
 
     const saveSetting = async (data: unknown) => {
-        const parsedInput = SpaceSelectionFormSchema.parse(data);
+        console.debug("data :>> ", data)
+        try {
 
-        await invoke("saveGlobalSpaceSetting", { space: parsedInput.space.value});
+            const parsedInput = SpaceSelectionFormSchema.parse(data);
+            await invoke("saveGlobalSpaceSetting", {space: parsedInput.space.value});
+            onSubmit();
+        } catch (e: unknown) {
+            console.error("Error parsing form data", e);
+        }
     };
 
     return (
-        <Form onSubmit={handleSubmit(saveSetting)}>
-            <Heading as="h2" size={"small"}>
-                Configure the default space where the imported pages will be created.
-            </Heading>
-            <Box xcss={xcss({maxWidth: "50%"})}>
+        <Box xcss={xcss({marginBlock: "space.300", marginInline: "space.500"})}>
+            <Modal onClose={closeModal}>
 
-                <FormSection>
-                    <Label labelFor={getFieldId("space")}>Space</Label>
-                    <Select
-                        {...register("space", {required: true})}
-                        appearance="subtle"
-                        onInputChange={value => setKey(value)}
-                        options={options}
-                    />
+                <Form onSubmit={handleSubmit(saveSetting)}>
+                    <ModalHeader>
+                        <ModalTitle>Configure default space</ModalTitle>
+                        <Button appearance="subtle" onClick={closeModal}>X</Button>
+                    </ModalHeader>
 
-                </FormSection>
-                <FormFooter>
-                    <Button appearance="primary" type="submit">
-                        Submit
-                    </Button>
-                </FormFooter>
-            </Box>
-        </Form>
+                    <ModalBody>
+                        <Box xcss={xcss({maxWidth: "30rem"})}>
+                            <Label labelFor={getFieldId("space")}>Space</Label>
+                            <Select
+                                {...register("space", {required: true})}
+                                appearance="subtle"
+                                onInputChange={value => setKey(value)}
+                                options={options}
+                            />
+                        </Box>
+                    </ModalBody>
+
+                    <ModalFooter>
+                        <FormFooter>
+                            <Inline space="space.200">
+                                <Button appearance="subtle" onClick={closeModal}>Cancel</Button>
+                                <Button appearance="primary" type="submit">
+                                    Submit
+                                </Button>
+                            </Inline>
+                        </FormFooter>
+                    </ModalFooter>
+
+                </Form>
+
+            </Modal>
+        </Box>
     );
 };
 

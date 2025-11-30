@@ -1,6 +1,7 @@
-import kvs, { WhereConditions } from "@forge/kvs";
-import logger from "./logger";
 import z from "zod";
+import kvs, {WhereConditions} from "@forge/kvs";
+import logger from "../logger";
+import {stringOrNumber} from "../schemas";
 
 const PageAttachmentLinkSchema = z.object({
     pageId: z.string(),
@@ -98,7 +99,5 @@ class InvalidStorageKeyError extends Error {
         this.name = "InvalidStorageKeyError";
     }
 }
-
-const stringOrNumber = z.union([z.string(), z.number()]);
 
 export const pageAttachmentLinkRepository = new PageAttachmentLinkRepository();
