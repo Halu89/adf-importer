@@ -45,14 +45,13 @@ export const createPage = async (pageData: CreatePageData) => {
             },
         });
 
-    const data = CreatePage200ResponseSchema.parse(await response.json());
-
     if (response.ok) {
+        const data = CreatePage200ResponseSchema.parse(await response.json());
         logger.debug(`Successfully created page: `, data);
         return data;
     } else {
         logger.error(
-            `Failed to create page: ${JSON.stringify(data)}`,
+            `Failed to create page: ${JSON.stringify(pageData)}`,
             response,
         );
         throw new Error(

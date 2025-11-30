@@ -1,4 +1,4 @@
-import { XMLValidator} from "fast-xml-parser";
+import { XMLValidator } from "fast-xml-parser";
 import logger from "./logger";
 
 interface PageValidator {
@@ -33,9 +33,12 @@ export class StorageFormatValidator implements PageValidator {
 
         if (result === true) {
             this.#logger.debug("Page format valid");
-            return true
+            return true;
         } else {
-            this.#logger.error("Invalid document format, XML validation failed", result);
+            this.#logger.error(
+                "Invalid document format, XML validation failed",
+                result,
+            );
             return false;
         }
     }

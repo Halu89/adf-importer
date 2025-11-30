@@ -1,6 +1,7 @@
 import { pageAttachmentLinkRepository } from "./storage";
 import { deletePage } from "./confluence-api/PageAPI";
 import logger from "./logger";
+import { deleteComment, getComments } from "./jira-api/IssueCommentAPI";
 
 export async function cleanup(
     issueId: string | number,
@@ -32,6 +33,8 @@ export async function cleanupAll(issueId: string | number) {
         pages.map((page) => cleanup(issueId, page.attachmentId)),
     );
 
+    await removeComments(issueId);
+
     const tally = cleanupResults.reduce(tallyResult, {
         successful: 0,
         failed: 0,
@@ -62,5 +65,37 @@ const tallyResult = (
             successful: acc.successful,
             failed: acc.failed + 1,
         };
+    }
+};
+
+const removeComments = async (issueId: string | number) => {
+    logger.debug(`Removing comments for issue ${issueId}`);
+    const resp = await getComments(issueId);
+    logger.debug(`Retrieved ${resp.comments.length} comments`);
+
+    const appComments = resp.comments.filter(
+        (comment) =>
+            comment.author.accountType === "app" &&
+            comment.author.displayName === "adf-importer",
+    );
+    logger.debug(`Found ${appComments.length} comments to delete`);
+
+    const cleanupResults = await Promise.allSettled(
+        appComments.map((comment) => deleteComment(issueId, comment.id)),
+    );
+
+    const tally = cleanupResults.reduce(tallyResult, {
+        successful: 0,
+        failed: 0,
+    });
+
+    if (tally.failed > 0) {
+        logger.error(
+            `Failed to cleanup ${tally.failed} comments for issue ${issueId}, successfully cleaned up ${tally.successful} comments.`,
+        );
+    } else {
+        logger.debug(
+            `Finished cleanup for issue ${issueId}, successfully cleaned up ${tally.successful} comments.`,
+        );
     }
 };
