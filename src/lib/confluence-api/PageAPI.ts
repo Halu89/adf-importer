@@ -73,6 +73,7 @@ class CurrentInstancePageCreator implements PageCreator {
 }
 
 export const pageCreator = new CurrentInstancePageCreator();
+
 export class RemotePageCreator implements PageCreator {
     private readonly authorizationHeader: string;
 
@@ -90,11 +91,13 @@ export class RemotePageCreator implements PageCreator {
             throw new Error("No personal settings found for user");
         }
 
+        const replacedPageData = this.applyReplacements(pageData);
+
         return await fetch(
             `${this.settings.targetInstance}/wiki/api/v2/pages`,
             {
                 method: "POST",
-                body: JSON.stringify(pageData),
+                body: JSON.stringify(replacedPageData),
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
@@ -102,6 +105,29 @@ export class RemotePageCreator implements PageCreator {
                 },
             },
         );
+    }
+
+    /**
+     * Allows us to modify the macro app id and environment id to apply to different contexts
+     */
+    applyReplacements(pageData: CreatePageData) {
+        if (!this.settings.replacements) {
+            return pageData;
+        }
+
+        let value = pageData.body.value;
+
+        for (const replacement of this.settings.replacements) {
+            logger.debug(
+                `Replacing ${replacement.from} with ${replacement.to}`,
+            );
+            value = value.replaceAll(replacement.from, replacement.to);
+        }
+
+        return {
+            ...pageData,
+            body: { value, representation: pageData.body.representation },
+        };
     }
 }
 

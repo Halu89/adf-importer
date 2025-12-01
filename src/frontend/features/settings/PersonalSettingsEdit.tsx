@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import {
     Button,
     FormFooter,
@@ -15,16 +15,26 @@ import {
     useForm,
     RequiredAsterisk,
     LoadingButton,
+    xcss,
+    Box,
 } from "@forge/react";
 import type { PersonalSettings } from "../../../lib/schemas";
 import { useMutation } from "@tanstack/react-query";
 import { savePersonalSettings } from "../../api/InternalAPI";
 
+type Replacements = Exclude<PersonalSettings["replacements"], undefined>;
+
 const PersonalSettingsEdit = () => {
     const { handleSubmit, register, getFieldId } = useForm<PersonalSettings>();
     const [isOpen, setIsOpen] = useState(false);
 
+    const [replacements, setReplacements] = useState<Replacements>([]);
+
     const closeModal = () => setIsOpen(false);
+
+    const handleRemoveReplacement = (index: number) => {
+        setReplacements((prev) => prev.filter((_, i) => index !== i));
+    };
 
     const { mutate: saveSettings, isPending } = useMutation({
         ...savePersonalSettings,
@@ -44,9 +54,10 @@ const PersonalSettingsEdit = () => {
                 {isOpen && (
                     <Modal>
                         <Form
-                            onSubmit={handleSubmit((settings) =>
-                                saveSettings(settings),
-                            )}
+                            onSubmit={handleSubmit((settings) => {
+                                console.debug("settings :>> ", settings);
+                                saveSettings(settings);
+                            })}
                         >
                             <ModalHeader>
                                 <ModalTitle>Personal settings</ModalTitle>
@@ -111,6 +122,87 @@ const PersonalSettingsEdit = () => {
                                     })}
                                     placeholder="123456"
                                 />
+
+                                <Box xcss={xcss({ marginBlock: "space.100" })}>
+                                    <Button
+                                        onClick={() =>
+                                            setReplacements([
+                                                ...replacements,
+                                                { from: "", to: "" },
+                                            ])
+                                        }
+                                    >
+                                        Add replacement
+                                    </Button>
+                                </Box>
+
+                                {replacements.map((replacement, index) => (
+                                    <Fragment
+                                        key={`${replacement.from}-${replacement.to}`}
+                                    >
+                                        <Inline
+                                            grow={"fill"}
+                                            space="space.100"
+                                            alignInline="stretch"
+                                        >
+                                            <Box xcss={xcss({ width: "100%" })}>
+                                                <Label
+                                                    labelFor={getFieldId(
+                                                        `replacements.${index}.from`,
+                                                    )}
+                                                >
+                                                    From
+                                                    <RequiredAsterisk />
+                                                </Label>
+                                                <Textfield
+                                                    {...register(
+                                                        `replacements.${index}.from`,
+                                                        {
+                                                            required: true,
+                                                        },
+                                                    )}
+                                                    placeholder="c2decf0d-0aa0-4ac9-bc64-4e3fb6d21205"
+                                                />
+                                            </Box>
+
+                                            <Box xcss={xcss({ width: "100%" })}>
+                                                <Label
+                                                    labelFor={getFieldId(
+                                                        `replacements.${index}.to`,
+                                                    )}
+                                                >
+                                                    To
+                                                    <RequiredAsterisk />
+                                                </Label>
+                                                <Textfield
+                                                    {...register(
+                                                        `replacements.${index}.to`,
+                                                        {
+                                                            required: true,
+                                                        },
+                                                    )}
+                                                    placeholder="c2decf0d-0aa0-4ac9-bc64-4e3fb6d21205"
+                                                />
+                                            </Box>
+                                        </Inline>
+
+                                        <Box
+                                            xcss={xcss({
+                                                marginBlock: "space.050",
+                                            })}
+                                        >
+                                            <Button
+                                                onClick={() =>
+                                                    handleRemoveReplacement(
+                                                        index,
+                                                    )
+                                                }
+                                            >
+                                                Remove
+                                            </Button>
+                                        </Box>
+                                    </Fragment>
+                                ))}
                             </ModalBody>
 
                             <ModalFooter>

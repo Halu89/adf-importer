@@ -90,6 +90,9 @@ export const PersonalSettingsSchema = z.object({
     space: z.object({
         id: z.string(),
     }),
+    replacements: z
+        .array(z.object({ from: z.string(), to: z.string() }))
+        .optional(),
 });
 
 export type PersonalSettings = z.infer<typeof PersonalSettingsSchema>;
