@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
     Button,
     FormFooter,
@@ -16,7 +16,7 @@ import {
     RequiredAsterisk,
     LoadingButton,
 } from "@forge/react";
-import { PersonalSettings } from "../../../lib/schemas";
+import type { PersonalSettings } from "../../../lib/schemas";
 import { useMutation } from "@tanstack/react-query";
 import { savePersonalSettings } from "../../api/InternalAPI";
 

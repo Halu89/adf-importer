@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
     getAttachmentsForIssue,
-    IssueAttachment,
+    type IssueAttachment,
 } from "../../../api/AttachmentAPI";
 import useIssueId from "../hooks/useIssueId";
 import { Inline, LoadingButton, Stack, Text } from "@forge/react";

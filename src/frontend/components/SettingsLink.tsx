@@ -1,8 +1,7 @@
-import { LinkProps } from "@forge/react/out/types";
+import type { LinkProps } from "@forge/react/out/types";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "@forge/bridge";
 import { Link } from "@forge/react";
-import React from "react";
 
 type SettingsLinkProps = Omit<LinkProps, "href">;
 

@@ -1,16 +1,12 @@
 import { makeResolver } from "@forge/resolver";
-import { ResolverDefs } from "../shared/types";
-import {
-    pageAttachmentLinkRepository,
-    settingsRepository,
-} from "../lib/storage";
+import type { ResolverDefs } from "../shared/types";
+import { settingsRepository } from "../lib/storage";
 import z from "zod";
 import logger from "../lib/logger";
 import {
     getAttachment,
     getAttachmentMetadata,
 } from "../lib/jira-api/AttachmentApi";
-import { Attachment } from "../lib/schemas";
 import { createPage, RemotePageCreator } from "../lib/confluence-api/PageAPI";
 
 export const handler = makeResolver<ResolverDefs>({
@@ -22,7 +18,7 @@ export const handler = makeResolver<ResolverDefs>({
         logger.debug("Global space setting saved successfully");
     },
 
-    getGlobalSpaceSetting: async (req) => {
+    getGlobalSpaceSetting: async () => {
         logger.debug("Getting global space setting");
 
         const result = await settingsRepository.getGlobalSetting();
@@ -32,8 +28,6 @@ export const handler = makeResolver<ResolverDefs>({
     },
 
     savePersonalSpaceSetting: async (req) => {
-        console.debug("req :>> ", req);
-
         logger.debug(
             "Saving personal space setting: ",
             req.payload.settings,
@@ -63,38 +57,14 @@ export const handler = makeResolver<ResolverDefs>({
             context.accountId,
         );
 
-        logger.debug(result);
-
         logger.debug("Personal space setting retrieved successfully");
         return !!result;
-    },
-
-    getAttachmentsForIssue: async (req) => {
-        logger.debug("Getting attachments for issue", req.payload);
-        const attachmentLinks = await pageAttachmentLinkRepository.getPages(
-            req.payload,
-        );
-
-        const attachmentPromises = await Promise.allSettled(
-            attachmentLinks.map((link) =>
-                getAttachmentMetadata(link.attachmentId),
-            ),
-        );
-
-        let result: Attachment[] = [];
-
-        for (const a of attachmentPromises) {
-            if (a.status === "fulfilled") {
-                result.push(a.value as Attachment);
-            }
-        }
-        return result;
     },
 
     exportPageToSpace: async (req) => {
         logger.debug("Exporting page to personal space");
         const context = ResolverContextSchema.parse(req.context);
-        const attachment = z.string().parse(req.payload.attachmentId);
+        const attachmentId = z.string().parse(req.payload.attachmentId);
 
         const personalSettings =
             await settingsRepository.getPersonalSpaceSetting(context.accountId);
@@ -103,7 +73,8 @@ export const handler = makeResolver<ResolverDefs>({
             throw new Error("No personal space settings found for user");
         }
 
-        const page = await getAttachment(attachment);
+        const attachmentMeta = await getAttachmentMetadata(attachmentId);
+        const page = await getAttachment(attachmentId);
         if (!page) {
             throw new Error("Attachment not found");
         }
@@ -116,7 +87,9 @@ export const handler = makeResolver<ResolverDefs>({
                     value: page,
                 },
                 status: "current",
-                title: "Exported page",
+                title: attachmentMeta
+                    ? `${attachmentMeta.filename} - ${attachmentMeta.id} - ${attachmentMeta.created}`
+                    : `Exported page - ${Date.now()}`,
             },
             new RemotePageCreator(personalSettings),
         );

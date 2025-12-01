@@ -1,7 +1,7 @@
 import kvs from "@forge/kvs";
 import z from "zod";
 import {
-    PersonalSettings,
+    type PersonalSettings,
     PersonalSettingsSchema,
     type Space,
     SpaceSchema,

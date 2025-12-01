@@ -1,7 +1,7 @@
-import api, { fetch, Response, route } from "@forge/api";
+import api, { fetch, type Response, route } from "@forge/api";
 import { z } from "zod";
 import logger from "../logger";
-import { PersonalSettings } from "../schemas";
+import type { PersonalSettings } from "../schemas";
 
 const PageBodySchema = z.object({
     representation: z.literal("storage"),
@@ -91,7 +91,7 @@ export class RemotePageCreator implements PageCreator {
         }
 
         return await fetch(
-            `${this.settings.targetInstance}/wiki/rest/api/content`,
+            `${this.settings.targetInstance}/wiki/api/v2/pages`,
             {
                 method: "POST",
                 body: JSON.stringify(pageData),

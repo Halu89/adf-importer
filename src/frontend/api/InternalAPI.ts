@@ -1,7 +1,7 @@
 import { mutationOptions, queryOptions } from "@tanstack/react-query";
 import { makeInvoke, showFlag } from "@forge/bridge";
-import { ResolverDefs } from "../../shared/types";
-import { PersonalSettings, Space } from "../../lib/schemas";
+import type { ResolverDefs } from "../../shared/types";
+import type { PersonalSettings, Space } from "../../lib/schemas";
 import { queryClient } from "../providers/QueryClientProvider";
 
 const invoke = makeInvoke<ResolverDefs>();
@@ -69,19 +69,6 @@ export function getPersonalSettings() {
         queryFn: () => {
             return invoke("getPersonalSpaceSetting");
         },
-    });
-}
-
-export function getAttachmentsForIssue(issueId: string | number | undefined) {
-    return queryOptions({
-        queryKey: ["GetAttachmentsForIssue", issueId],
-        queryFn: async () => {
-            if (!issueId) {
-                throw new Error("Issue ID is required to fetch attachments");
-            }
-            return await invoke("getAttachmentsForIssue", issueId);
-        },
-        enabled: issueId != undefined,
     });
 }
 

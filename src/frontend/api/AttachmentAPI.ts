@@ -25,7 +25,9 @@ export function getAttachmentsForIssue(issueId: string | number | undefined) {
                     console.debug("attachments :>> ", attachments);
 
                     return attachments.filter((a) =>
-                        ALLOWED_MIME_TYPES.includes(a.mimeType as any),
+                        ALLOWED_MIME_TYPES.includes(
+                            a.mimeType as (typeof ALLOWED_MIME_TYPES)[number],
+                        ),
                     );
                 } catch (e: unknown) {
                     logger.error("Unable to parse attachments response", e);
@@ -36,7 +38,7 @@ export function getAttachmentsForIssue(issueId: string | number | undefined) {
                 throw new Error("Unable to retrieve issue attachments");
             }
         },
-        enabled: issueId != undefined,
+        enabled: issueId != null,
     });
 }
 

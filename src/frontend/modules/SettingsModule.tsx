@@ -9,11 +9,10 @@ import ForgeReconciler, {
 } from "@forge/react";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { queryClient } from "../providers/QueryClientProvider";
-import { makeInvoke } from "@forge/bridge";
-import { ResolverDefs } from "../../shared/types";
 import GlobalSettingsEdit from "../features/settings/GlobalSettingsEdit";
-import { getGlobalSettings, getPersonalSettings } from "../api/InternalAPI";
+import { getGlobalSettings } from "../api/InternalAPI";
 import PersonalSettingsEdit from "../features/settings/PersonalSettingsEdit";
+import PersonalSettingsIndication from "../features/settings/PersonalSettingsIndication";
 
 const App = () => {
     const { data: spaceSetting, isLoading } = useQuery(getGlobalSettings());
@@ -53,20 +52,6 @@ const App = () => {
             </Box>
         </>
     );
-};
-
-const PersonalSettingsIndication = () => {
-    const { data, isLoading } = useQuery(getPersonalSettings());
-
-    if (isLoading) {
-        return <Text>Loading personal settings</Text>;
-    }
-
-    if (!data) {
-        return <Text>No personal settings found</Text>;
-    }
-
-    return <Text>Personal settings saved successfully</Text>;
 };
 
 ForgeReconciler.render(

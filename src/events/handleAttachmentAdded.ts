@@ -2,7 +2,7 @@ import { getAttachment } from "../lib/jira-api/AttachmentApi";
 import z from "zod";
 import {
     createPage,
-    CreatePage200Response,
+    type CreatePage200Response,
     pageCreator,
 } from "../lib/confluence-api/PageAPI";
 import logger from "../lib/logger";
@@ -96,7 +96,7 @@ async function createPageFromAttachment(attachment: Attachment, text: string) {
                 value: text,
             },
             status: "current",
-            title: `${attachment.fileName} - ${attachment.issueId} - ${attachment.createDate}`,
+            title: `${attachment.issueId} - ${attachment.fileName} - ${attachment.createDate}`,
         },
         pageCreator,
     );

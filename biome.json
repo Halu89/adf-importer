@@ -19,7 +19,10 @@
       "react": "all"
     },
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "style": {
+        "useComponentExportOnlyModules": "off"
+      }
     }
   },
   "javascript": {

@@ -17,7 +17,7 @@ class PageAttachmentLinkRepository {
     async savePage(params: PageAttachmentLink) {
         try {
             PageAttachmentLinkSchema.parse(params);
-            let key = this.getKey(params.issueId, params.attachmentId);
+            const key = this.getKey(params.issueId, params.attachmentId);
 
             await kvs.set(key, JSON.stringify(params));
 

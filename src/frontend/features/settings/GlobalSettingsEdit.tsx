@@ -19,7 +19,7 @@ import useDebounce from "../../hooks/useDebounce";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import z from "zod";
 import { searchSpacesByTitle } from "../../api/SpaceAPI";
-import { Space, SpaceSchema } from "../../../lib/schemas";
+import { type Space, SpaceSchema } from "../../../lib/schemas";
 import { saveGlobalSpaceSettings } from "../../api/InternalAPI";
 
 interface GlobalSettingsEditProps {

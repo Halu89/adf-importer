@@ -1,6 +1,6 @@
 import api, { route } from "@forge/api";
 import logger from "../logger";
-import { AttachmentSchema } from "../schemas";
+import z from "zod";
 
 export const getAttachment = async (id: string | number) => {
     try {
@@ -34,7 +34,7 @@ export const getAttachmentMetadata = async (id: string) => {
 
     if (response.ok) {
         try {
-            return AttachmentSchema.parse(await response.json());
+            return AttachmentAPISchema.parse(await response.json());
         } catch (e: unknown) {
             logger.error("Error parsing attachment metadata", e);
         }
@@ -43,3 +43,10 @@ export const getAttachmentMetadata = async (id: string) => {
         throw new Error(`Failed to fetch attachment metadata: ${id}`);
     }
 };
+
+const AttachmentAPISchema = z.object({
+    id: z.number(),
+    filename: z.string(),
+    mimeType: z.string(),
+    created: z.string().optional(),
+});
