@@ -38,7 +38,7 @@ class SettingsRepository {
             PersonalSettingsSchema.parse(settings);
             z.string().trim().min(8).parse(accountId);
 
-            return await kvs.set(
+            return await kvs.setSecret(
                 this.getKey(SettingsRepository.PERSONAL, accountId),
                 JSON.stringify(settings),
             );
@@ -54,7 +54,7 @@ class SettingsRepository {
             .string()
             .optional()
             .parse(
-                await kvs.get(
+                await kvs.getSecret(
                     this.getKey(SettingsRepository.PERSONAL, accountId),
                 ),
             );
