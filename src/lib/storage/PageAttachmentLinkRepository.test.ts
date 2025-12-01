@@ -42,9 +42,9 @@ describe("PageAttachmentLinkRepository", () => {
         kvs.set.mockResolvedValue(undefined);
         await pageAttachmentLinkRepository.savePage(link);
         expect(kvs.set).toHaveBeenCalledWith(key, JSON.stringify(link));
+        // logger.log is called with a single string containing the key and JSON value separated by a newline
         expect(logger.log).toHaveBeenCalledWith(
-            expect.stringContaining("Page stored: "),
-            expect.anything()
+            expect.stringContaining(`Page stored: ${link.pageId}`)
         );
     });
 

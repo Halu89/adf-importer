@@ -21,7 +21,7 @@ class PageAttachmentLinkRepository {
 
             await kvs.set(key, JSON.stringify(params));
 
-            logger.log(`Page stored: ${key}\n${JSON.stringify(params)}`);
+            logger.log(`Page stored: ${params.pageId}`);
         } catch (e) {
             logger.error("Unable to store page", e);
         }
