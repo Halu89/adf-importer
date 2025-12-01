@@ -7,7 +7,7 @@ import {
 import logger from "../lib/logger";
 import { StorageFormatValidator } from "../lib/PageValidator";
 import { createInternalComment } from "../lib/jira-api/IssueCommentAPI";
-import { pageAttachmentLinkRepository } from "../lib/storage";
+import {pageAttachmentLinkRepository, settingsRepository} from "../lib/storage";
 import { AttachmentSchema } from "../lib/schemas";
 
 const AttachmentEventSchema = z.object({
@@ -74,22 +74,24 @@ const pageUrl = (page: CreatePage200Response | undefined) => {
     return `${page?._links?.base}${page?._links?.webui}`;
 };
 
-function createPageFromAttachment(attachment: Attachment, text: string) {
+async function createPageFromAttachment(attachment: Attachment, text: string) {
     /**
      * The ID of the Confluence space where the page will be created. Will have to be configurable
      */
-    const SPACE_ID = "635502596";
-    const HOMEPAGE_ID = "635503984";
+    const spaceSetting = await settingsRepository.getGlobalSetting();
+    if (!spaceSetting) {
+        logger.error("No global space setting found");
+        return;
+    }
 
     return createPage({
-        spaceId: SPACE_ID,
+        spaceId: String(spaceSetting.id),
         body: {
             representation: "storage",
             value: text,
         },
         status: "current",
         title: `${attachment.fileName} - ${attachment.issueId} - ${attachment.createDate}`,
-        parentId: HOMEPAGE_ID,
     });
 }
 

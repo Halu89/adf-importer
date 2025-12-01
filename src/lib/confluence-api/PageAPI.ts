@@ -11,7 +11,7 @@ const CreatePageDataSchema = z.object({
     spaceId: z.string(),
     status: z.literal("current"),
     title: z.string(),
-    parentId: z.string(),
+    parentId: z.string().optional(),
     body: PageBodySchema,
 });
 
