@@ -10,6 +10,9 @@ import {
 import { createPage, RemotePageCreator } from "../lib/confluence-api/PageAPI";
 
 export const handler = makeResolver<ResolverDefs>({
+    /**
+     * Saves the global space setting.
+     */
     saveGlobalSpaceSetting: async (req) => {
         logger.debug("Saving global space setting");
 
@@ -18,6 +21,9 @@ export const handler = makeResolver<ResolverDefs>({
         logger.debug("Global space setting saved successfully");
     },
 
+    /**
+     * Retrieves the global space setting.
+     */
     getGlobalSpaceSetting: async () => {
         logger.debug("Getting global space setting");
 
@@ -27,6 +33,9 @@ export const handler = makeResolver<ResolverDefs>({
         return result;
     },
 
+    /**
+     * Saves the personal space setting for a specific user.
+     */
     savePersonalSpaceSetting: async (req) => {
         logger.debug(
             "Saving personal space setting: ",
@@ -44,7 +53,7 @@ export const handler = makeResolver<ResolverDefs>({
     },
 
     /**
-     * Only returns a boolean indicating whether personal settings exist for the user
+     * Checks if personal space settings exist for the user.
      */
     getPersonalSpaceSetting: async (req) => {
         logger.debug(
@@ -61,6 +70,9 @@ export const handler = makeResolver<ResolverDefs>({
         return !!result;
     },
 
+    /**
+     * Exports a page to the user's personal Confluence space.
+     */
     exportPageToSpace: async (req) => {
         logger.debug("Exporting page to personal space");
         const context = ResolverContextSchema.parse(req.context);
