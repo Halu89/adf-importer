@@ -6,14 +6,10 @@ import {
 } from "../lib/storage";
 import z from "zod";
 import logger from "../lib/logger";
+import { getAttachmentMetadata } from "../lib/jira-api/AttachmentApi";
+import { Attachment } from "../lib/schemas";
 
 export const handler = makeResolver<ResolverDefs>({
-    getText: async (req) => {
-        console.log(req);
-        const pages = await pageAttachmentLinkRepository.getPages(14762);
-        return JSON.stringify(pages);
-    },
-
     saveGlobalSpaceSetting: async (req) => {
         logger.debug("Saving global space setting");
 
@@ -63,8 +59,32 @@ export const handler = makeResolver<ResolverDefs>({
             context.accountId,
         );
 
+        logger.debug(result);
+
         logger.debug("Personal space setting retrieved successfully");
         return !!result;
+    },
+
+    getAttachmentsForIssue: async (req) => {
+        logger.debug("Getting attachments for issue", req.payload);
+        const attachmentLinks = await pageAttachmentLinkRepository.getPages(
+            req.payload,
+        );
+
+        const attachmentPromises = await Promise.allSettled(
+            attachmentLinks.map((link) =>
+                getAttachmentMetadata(link.attachmentId),
+            ),
+        );
+
+        let result: Attachment[] = [];
+
+        for (const a of attachmentPromises) {
+            if (a.status === "fulfilled") {
+                result.push(a.value as Attachment);
+            }
+        }
+        return result;
     },
 });
 

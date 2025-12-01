@@ -1,5 +1,6 @@
 import api, { route } from "@forge/api";
 import logger from "../logger";
+import { AttachmentSchema } from "../schemas";
 
 export const getAttachment = async (id: string | number) => {
     try {
@@ -21,5 +22,24 @@ export const getAttachment = async (id: string | number) => {
         return response.text();
     } catch (e: unknown) {
         logger.error("Error fetching attachment", e);
+    }
+};
+
+export const getAttachmentMetadata = async (id: string) => {
+    logger.debug(`Fetching attachment metadata: `, id);
+
+    const response = await api
+        .asApp()
+        .requestJira(route`/rest/api/3/attachment/${id}`);
+
+    if (response.ok) {
+        try {
+            return AttachmentSchema.parse(await response.json());
+        } catch (e: unknown) {
+            logger.error("Error parsing attachment metadata", e);
+        }
+    } else {
+        logger.error(`Failed to fetch attachment metadata: ${id}`, response);
+        throw new Error(`Failed to fetch attachment metadata: ${id}`);
     }
 };

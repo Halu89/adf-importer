@@ -1,7 +1,6 @@
-import { PersonalSettings, Space } from "../lib/schemas";
+import { Attachment, PersonalSettings, Space } from "../lib/schemas";
 
 export type ResolverDefs = {
-    getText: (args: never) => string;
     /**
      * Space settings
      */
@@ -10,4 +9,6 @@ export type ResolverDefs = {
 
     savePersonalSpaceSetting: (args: { settings: PersonalSettings }) => void;
     getPersonalSpaceSetting: (args: never) => boolean;
+
+    getAttachmentsForIssue: (issueId: string | number) => Attachment[];
 };

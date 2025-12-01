@@ -51,6 +51,8 @@ export const AttachmentSchema = z.object({
     author: UserSchema.optional(),
 });
 
+export type Attachment = z.infer<typeof AttachmentSchema>;
+
 export const stringOrNumber = z.union([z.string(), z.number()]);
 
 export const SpaceSchema = z.object({

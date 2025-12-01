@@ -71,3 +71,16 @@ export function getPersonalSettings() {
         },
     });
 }
+
+export function getAttachmentsForIssue(issueId: string | number | undefined) {
+    return queryOptions({
+        queryKey: ["GetAttachmentsForIssue", issueId],
+        queryFn: async () => {
+            if (!issueId) {
+                throw new Error("Issue ID is required to fetch attachments");
+            }
+            return await invoke("getAttachmentsForIssue", issueId);
+        },
+        enabled: issueId != undefined,
+    });
+}
