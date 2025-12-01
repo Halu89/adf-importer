@@ -1,10 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
     getAttachmentsForIssue,
     IssueAttachment,
 } from "../../../api/AttachmentAPI";
 import useIssueId from "../hooks/useIssueId";
-import { Button, Inline, Stack, Text } from "@forge/react";
+import { Inline, LoadingButton, Stack, Text } from "@forge/react";
+import { exportPageToPersonalSpace } from "../../../api/InternalAPI";
 
 const AttachmentTable = () => {
     const issueId = useIssueId();
@@ -20,16 +21,22 @@ const AttachmentTable = () => {
 };
 
 const AttachmentRow = ({ attachment }: { attachment: IssueAttachment }) => {
+    const { mutate: exportAttachment, isPending } = useMutation(
+        exportPageToPersonalSpace(),
+    );
+
     return (
         <Inline spread={"space-between"} alignBlock={"center"}>
             <Text>{attachment.filename}</Text>
-            <Button
+            <LoadingButton
                 onClick={() => {
                     console.debug("Importing", attachment.id);
+                    exportAttachment(attachment.id);
                 }}
+                isLoading={isPending}
             >
                 Import to my personal instance
-            </Button>
+            </LoadingButton>
         </Inline>
     );
 };

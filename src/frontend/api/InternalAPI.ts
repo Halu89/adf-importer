@@ -84,3 +84,11 @@ export function getAttachmentsForIssue(issueId: string | number | undefined) {
         enabled: issueId != undefined,
     });
 }
+
+export function exportPageToPersonalSpace() {
+    return mutationOptions({
+        mutationFn: async (attachmentId: string) => {
+            return invoke("exportPageToSpace", { attachmentId });
+        },
+    });
+}

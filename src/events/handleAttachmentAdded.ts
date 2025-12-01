@@ -3,11 +3,15 @@ import z from "zod";
 import {
     createPage,
     CreatePage200Response,
+    pageCreator,
 } from "../lib/confluence-api/PageAPI";
 import logger from "../lib/logger";
 import { StorageFormatValidator } from "../lib/PageValidator";
 import { createInternalComment } from "../lib/jira-api/IssueCommentAPI";
-import {pageAttachmentLinkRepository, settingsRepository} from "../lib/storage";
+import {
+    pageAttachmentLinkRepository,
+    settingsRepository,
+} from "../lib/storage";
 import { AttachmentSchema } from "../lib/schemas";
 
 const AttachmentEventSchema = z.object({
@@ -84,38 +88,22 @@ async function createPageFromAttachment(attachment: Attachment, text: string) {
         return;
     }
 
-    return createPage({
-        spaceId: String(spaceSetting.id),
-        body: {
-            representation: "storage",
-            value: text,
+    return createPage(
+        {
+            spaceId: String(spaceSetting.id),
+            body: {
+                representation: "storage",
+                value: text,
+            },
+            status: "current",
+            title: `${attachment.fileName} - ${attachment.issueId} - ${attachment.createDate}`,
         },
-        status: "current",
-        title: `${attachment.fileName} - ${attachment.issueId} - ${attachment.createDate}`,
-    });
+        pageCreator,
+    );
 }
 
 function createLinkToPage(pageUrl?: string) {
-    if (!pageUrl) {
-        return {
-            type: "doc",
-            content: [
-                {
-                    type: "paragraph",
-                    attrs: {
-                        localId: "2b7a5e7a-d3a1-43ba-9069-9b20fdf52f91",
-                    },
-                    content: [
-                        {
-                            text: "ADF imported",
-                            type: "text",
-                        },
-                    ],
-                },
-            ],
-            version: 1,
-        };
-    } else {
+    if (pageUrl) {
         return {
             type: "doc",
             content: [
@@ -134,6 +122,25 @@ function createLinkToPage(pageUrl?: string) {
                             attrs: {
                                 url: pageUrl,
                             },
+                        },
+                    ],
+                },
+            ],
+            version: 1,
+        };
+    } else {
+        return {
+            type: "doc",
+            content: [
+                {
+                    type: "paragraph",
+                    attrs: {
+                        localId: "2b7a5e7a-d3a1-43ba-9069-9b20fdf52f91",
+                    },
+                    content: [
+                        {
+                            text: "ADF imported",
+                            type: "text",
                         },
                     ],
                 },

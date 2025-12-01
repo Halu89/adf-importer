@@ -6,8 +6,12 @@ import {
 } from "../lib/storage";
 import z from "zod";
 import logger from "../lib/logger";
-import { getAttachmentMetadata } from "../lib/jira-api/AttachmentApi";
+import {
+    getAttachment,
+    getAttachmentMetadata,
+} from "../lib/jira-api/AttachmentApi";
 import { Attachment } from "../lib/schemas";
+import { createPage, RemotePageCreator } from "../lib/confluence-api/PageAPI";
 
 export const handler = makeResolver<ResolverDefs>({
     saveGlobalSpaceSetting: async (req) => {
@@ -85,6 +89,37 @@ export const handler = makeResolver<ResolverDefs>({
             }
         }
         return result;
+    },
+
+    exportPageToSpace: async (req) => {
+        logger.debug("Exporting page to personal space");
+        const context = ResolverContextSchema.parse(req.context);
+        const attachment = z.string().parse(req.payload.attachmentId);
+
+        const personalSettings =
+            await settingsRepository.getPersonalSpaceSetting(context.accountId);
+
+        if (!personalSettings) {
+            throw new Error("No personal space settings found for user");
+        }
+
+        const page = await getAttachment(attachment);
+        if (!page) {
+            throw new Error("Attachment not found");
+        }
+
+        await createPage(
+            {
+                spaceId: personalSettings.space.id,
+                body: {
+                    representation: "storage",
+                    value: page,
+                },
+                status: "current",
+                title: "Exported page",
+            },
+            new RemotePageCreator(personalSettings),
+        );
     },
 });
 

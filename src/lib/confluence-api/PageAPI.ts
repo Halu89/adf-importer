@@ -1,6 +1,7 @@
-import api, { route } from "@forge/api";
+import api, { fetch, Response, route } from "@forge/api";
 import { z } from "zod";
 import logger from "../logger";
+import { PersonalSettings } from "../schemas";
 
 const PageBodySchema = z.object({
     representation: z.literal("storage"),
@@ -31,19 +32,13 @@ export const CreatePage200ResponseSchema = z.object({
 
 export type CreatePage200Response = z.infer<typeof CreatePage200ResponseSchema>;
 
-export const createPage = async (pageData: CreatePageData) => {
+export const createPage = async (
+    pageData: CreatePageData,
+    pageCreator: PageCreator,
+) => {
     logger.debug(`Creating page`);
 
-    const response = await api
-        .asApp()
-        .requestConfluence(route`/wiki/api/v2/pages`, {
-            method: "POST",
-            body: JSON.stringify(pageData),
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-        });
+    const response = await pageCreator.createPage(pageData);
 
     if (response.ok) {
         const data = CreatePage200ResponseSchema.parse(await response.json());
@@ -59,6 +54,56 @@ export const createPage = async (pageData: CreatePageData) => {
         );
     }
 };
+
+interface PageCreator {
+    createPage(pageData: CreatePageData): Promise<Response>;
+}
+
+class CurrentInstancePageCreator implements PageCreator {
+    async createPage(pageData: CreatePageData) {
+        return await api.asApp().requestConfluence(route`/wiki/api/v2/pages`, {
+            method: "POST",
+            body: JSON.stringify(pageData),
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+        });
+    }
+}
+
+export const pageCreator = new CurrentInstancePageCreator();
+export class RemotePageCreator implements PageCreator {
+    private readonly authorizationHeader: string;
+
+    constructor(private readonly settings: PersonalSettings) {
+        this.settings = settings;
+
+        const { email, token } = settings.authentication;
+
+        const encoded = Buffer.from(`${email}:${token}`).toString("base64");
+        this.authorizationHeader = `Basic ${encoded}`;
+    }
+
+    async createPage(pageData: CreatePageData) {
+        if (!this.settings) {
+            throw new Error("No personal settings found for user");
+        }
+
+        return await fetch(
+            `${this.settings.targetInstance}/wiki/rest/api/content`,
+            {
+                method: "POST",
+                body: JSON.stringify(pageData),
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Authorization: this.authorizationHeader,
+                },
+            },
+        );
+    }
+}
 
 export const deletePage = async (pageId: string | number) => {
     logger.debug(`Deleting page: ${pageId}`);

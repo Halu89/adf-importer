@@ -11,4 +11,6 @@ export type ResolverDefs = {
     getPersonalSpaceSetting: (args: never) => boolean;
 
     getAttachmentsForIssue: (issueId: string | number) => Attachment[];
+
+    exportPageToSpace: (args: { attachmentId: string }) => void;
 };

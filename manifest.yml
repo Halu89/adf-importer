@@ -93,6 +93,11 @@ permissions:
     - "delete:page:confluence" # Delete pages in Confluence for cleanup
     - "storage:app" # Store references to pages created from attachments
 
+  external:
+    fetch:
+      backend:
+        - "*.atlassian.net" # Create pages in external Confluence instances
+
 resources:
   - key: issueActivity
     path: src/frontend/modules/IssueActivityModule.tsx
