@@ -1,10 +1,6 @@
-import {describe, it, expect, vi, beforeEach, MockInstance} from "vitest";
-import type { Mock } from "vitest";
+import { describe, it, expect, vi, beforeEach, } from "vitest";
 import logger from "../logger";
 import { settingsRepository } from "./SettingsRepository";
-import { PersonalSettings, Space } from "../schemas";
-import {KvsImpl} from "@forge/kvs/out/kvs";
-import {GetResult} from "@forge/kvs";
 
 vi.mock(import("@forge/kvs"));
 
@@ -72,7 +68,7 @@ describe("SettingsRepository", () => {
     it("savePersonalSpaceSetting logs error on invalid input", async () => {
         await settingsRepository.savePersonalSpaceSetting(
             "short",
-            personalSettings as any,
+            personalSettings,
         );
 
         expect(logger.error).toHaveBeenCalledWith(
@@ -82,7 +78,9 @@ describe("SettingsRepository", () => {
     });
 
     it("getPersonalSpaceSetting returns parsed settings", async () => {
-        kvs.getSecret.mockResolvedValue(JSON.stringify(personalSettings) as never);
+        kvs.getSecret.mockResolvedValue(
+            JSON.stringify(personalSettings) as never,
+        );
         const result =
             await settingsRepository.getPersonalSpaceSetting(accountId);
 

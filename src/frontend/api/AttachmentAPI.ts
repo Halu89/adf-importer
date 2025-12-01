@@ -1,6 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
 import { requestJira } from "@forge/bridge";
-import logger from "../../lib/logger";
 import z from "zod";
 
 export function getAttachmentsForIssue(issueId: string | number | undefined) {
@@ -30,11 +29,11 @@ export function getAttachmentsForIssue(issueId: string | number | undefined) {
                         ),
                     );
                 } catch (e: unknown) {
-                    logger.error("Unable to parse attachments response", e);
+                    console.error("Unable to parse attachments response", e);
                     throw new Error("Unable to parse attachments response");
                 }
             } else {
-                logger.error("Unable to retrieve issue attachments", resp);
+                console.error("Unable to retrieve issue attachments", resp);
                 throw new Error("Unable to retrieve issue attachments");
             }
         },

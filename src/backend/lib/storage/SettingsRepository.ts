@@ -5,7 +5,7 @@ import {
     PersonalSettingsSchema,
     type Space,
     SpaceSchema,
-} from "../schemas";
+} from "../../../shared/schemas";
 import logger from "../logger";
 
 class SettingsRepository {

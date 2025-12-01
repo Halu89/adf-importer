@@ -1,6 +1,6 @@
 import z from "zod";
 import logger from "../lib/logger";
-import { IssueSchema, UserSchema } from "../lib/schemas";
+import { IssueSchema, UserSchema } from "../../shared/schemas";
 import { cleanupAll } from "../lib/CleanupService";
 
 const IssueDeletedEventSchema = z.object({

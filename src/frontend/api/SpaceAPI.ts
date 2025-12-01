@@ -1,7 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { requestConfluence } from "@forge/bridge";
-import logger from "../../lib/logger";
-import { MultiSpaceResultSchema } from "../../lib/schemas";
+import { MultiSpaceResultSchema } from "../../shared/schemas";
 
 export function searchSpacesByTitle(debouncedKey: string) {
     return queryOptions({
@@ -22,7 +21,7 @@ export function searchSpacesByTitle(debouncedKey: string) {
                         await titleSearchResults.json(),
                     );
                 } catch (e: unknown) {
-                    logger.error("Unable to parse spaces response", e);
+                    console.error("Unable to parse spaces response", e);
                     throw new Error("Unable to parse spaces response");
                 }
             }

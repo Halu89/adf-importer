@@ -5,7 +5,7 @@ import {
     IssueSchema,
     StatusSchema,
     UserSchema,
-} from "../lib/schemas";
+} from "../../shared/schemas";
 import { cleanupAll } from "../lib/CleanupService";
 
 const IssueUpdatedEventSchema = z.object({

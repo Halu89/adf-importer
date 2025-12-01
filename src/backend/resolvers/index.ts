@@ -1,5 +1,5 @@
 import { makeResolver } from "@forge/resolver";
-import type { ResolverDefs } from "../shared/types";
+import type { ResolverDefs } from "../../shared/types";
 import { settingsRepository } from "../lib/storage";
 import z from "zod";
 import logger from "../lib/logger";

@@ -1,4 +1,4 @@
-import type { PersonalSettings, Space } from "../lib/schemas";
+import type { PersonalSettings, Space } from "./schemas";
 
 export type ResolverDefs = {
     /**

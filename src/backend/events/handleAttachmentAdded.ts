@@ -12,7 +12,7 @@ import {
     pageAttachmentLinkRepository,
     settingsRepository,
 } from "../lib/storage";
-import { AttachmentSchema } from "../lib/schemas";
+import { AttachmentSchema } from "../../shared/schemas";
 
 const AttachmentEventSchema = z.object({
     eventType: z.literal("avi:jira:created:attachment"),

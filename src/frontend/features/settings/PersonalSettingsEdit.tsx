@@ -18,7 +18,7 @@ import {
     xcss,
     Box,
 } from "@forge/react";
-import type { PersonalSettings } from "../../../lib/schemas";
+import type { PersonalSettings } from "../../../shared/schemas";
 import { useMutation } from "@tanstack/react-query";
 import { savePersonalSettings } from "../../api/InternalAPI";
 

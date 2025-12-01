@@ -1,6 +1,6 @@
 import z from "zod";
 import logger from "../lib/logger";
-import { AttachmentSchema } from "../lib/schemas";
+import { AttachmentSchema } from "../../shared/schemas";
 import { cleanup } from "../lib/CleanupService";
 
 const AttachmentDeletedEventSchema = z.object({
