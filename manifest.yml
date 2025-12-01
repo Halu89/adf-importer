@@ -82,21 +82,19 @@ modules:
           }
         onError: RECEIVE_AND_LOG
 
-
 permissions:
   scopes:
-    - "read:jira-work" # Read events and attachments from Jira issues
-    - "write:jira-work" # Create comments on Jira issues
-    - "read:space:confluence" # Read space information in Confluence for the configuration
-    - "write:page:confluence" # Create pages in Confluence
+    - "read:jira-work"
+    - "write:jira-work"
+    - "read:space:confluence"
+    - "write:page:confluence"
     - "search:confluence"
-    - "delete:page:confluence" # Delete pages in Confluence for cleanup
-    - "storage:app" # Store references to pages created from attachments
-
+    - "delete:page:confluence"
+    - "storage:app"
   external:
     fetch:
       backend:
-        - "*.atlassian.net" # Create pages in external Confluence instances
+        - address: "*.atlassian.net"
 
 resources:
   - key: issueActivity
@@ -117,4 +115,3 @@ app:
       required: false
     jira:
       required: true
-
