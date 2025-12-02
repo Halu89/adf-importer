@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import logger from "../logger";
 import { settingsRepository } from "./SettingsRepository";
 

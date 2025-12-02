@@ -5,7 +5,8 @@ import {
     Form,
     FormFooter,
     Inline,
-    Label, LoadingButton,
+    Label,
+    LoadingButton,
     Modal,
     ModalBody,
     ModalFooter,
@@ -89,7 +90,11 @@ const GlobalSettingsEdit = ({ closeModal }: GlobalSettingsEditProps) => {
                                 >
                                     Cancel
                                 </Button>
-                                <LoadingButton appearance="primary" type="submit" isLoading={isPending}>
+                                <LoadingButton
+                                    appearance="primary"
+                                    type="submit"
+                                    isLoading={isPending}
+                                >
                                     Submit
                                 </LoadingButton>
                             </Inline>

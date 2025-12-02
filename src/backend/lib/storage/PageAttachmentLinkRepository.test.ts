@@ -121,6 +121,8 @@ describe("PageAttachmentLinkRepository", () => {
         // @ts-expect-error purposely invalid
         expect(() => pageAttachmentLinkRepository.getKey(null)).toThrow();
         // @ts-expect-error purposely invalid
-        expect(() => pageAttachmentLinkRepository.getKey("bad-key-arg")).toThrow();
+        expect(() =>
+            pageAttachmentLinkRepository.getKey("bad-key-arg"),
+        ).toThrow();
     });
 });
