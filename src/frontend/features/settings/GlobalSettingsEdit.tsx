@@ -5,7 +5,7 @@ import {
     Form,
     FormFooter,
     Inline,
-    Label,
+    Label, LoadingButton,
     Modal,
     ModalBody,
     ModalFooter,
@@ -35,7 +35,7 @@ const GlobalSettingsEdit = ({ closeModal }: GlobalSettingsEditProps) => {
 
     const { data: spaces } = useQuery(searchSpacesByTitle(debouncedKey));
 
-    const { mutate: saveGlobalSpace } = useMutation({
+    const { mutate: saveGlobalSpace, isPending } = useMutation({
         ...saveGlobalSpaceSettings,
         onSuccess: (...args) => {
             saveGlobalSpaceSettings.onSuccess?.(...args);
@@ -58,7 +58,7 @@ const GlobalSettingsEdit = ({ closeModal }: GlobalSettingsEditProps) => {
             <Modal onClose={closeModal}>
                 <Form
                     onSubmit={handleSubmit((data) => {
-                        saveGlobalSpace(SpaceSchema.parse(data));
+                        saveGlobalSpace(SpaceSchema.parse(data.space.value));
                     })}
                 >
                     <ModalHeader>
@@ -89,9 +89,9 @@ const GlobalSettingsEdit = ({ closeModal }: GlobalSettingsEditProps) => {
                                 >
                                     Cancel
                                 </Button>
-                                <Button appearance="primary" type="submit">
+                                <LoadingButton appearance="primary" type="submit" isLoading={isPending}>
                                     Submit
-                                </Button>
+                                </LoadingButton>
                             </Inline>
                         </FormFooter>
                     </ModalFooter>
