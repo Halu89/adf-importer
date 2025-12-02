@@ -69,7 +69,7 @@ export async function getComments(issueIdOrKey: string | number) {
         .requestJira(route`/rest/api/3/issue/${issueIdOrKey}/comment`);
 
     if (resp.ok) {
-        const result = MultiResultCommentSchema.parse(resp.json());
+        const result = MultiResultCommentSchema.parse(await resp.json());
         logger.debug(`Successfully fetched comments: `, result);
         return result;
     } else {
