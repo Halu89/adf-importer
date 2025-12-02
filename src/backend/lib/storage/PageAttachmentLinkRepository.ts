@@ -74,7 +74,7 @@ class PageAttachmentLinkRepository {
         );
     }
 
-    private getKey(...args: (string | number)[]): string {
+    getKey(...args: (string | number)[]): string {
         const parsedArgs = z.array(stringOrNumber).safeParse(args);
         if (!parsedArgs.success)
             throw new InvalidStorageKeyError("Invalid storage key");

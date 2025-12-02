@@ -120,7 +120,6 @@ describe("PageAttachmentLinkRepository", () => {
     it("getKey throws on invalid input", async () => {
         // @ts-expect-error purposely invalid
         expect(() => pageAttachmentLinkRepository.getKey(null)).toThrow();
-        // @ts-expect-error purposely invalid
         expect(() =>
             pageAttachmentLinkRepository.getKey("bad-key-arg"),
         ).toThrow();
