@@ -27,7 +27,7 @@ export class StorageFormatValidator implements PageValidator {
             return false;
         }
 
-        const result = this.#validator(page, {
+        const result = this.#validator(this.wrapPageContent(page), {
             allowBooleanAttributes: true,
         });
 
@@ -41,5 +41,12 @@ export class StorageFormatValidator implements PageValidator {
             );
             return false;
         }
+    }
+
+    /**
+     * The XML validator fails for multiple root nodes
+     */
+    private wrapPageContent(page: string): string {
+        return `<storageFormat>${page}</storageFormat>`;
     }
 }
