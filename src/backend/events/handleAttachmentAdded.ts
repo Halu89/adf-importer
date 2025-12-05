@@ -1,10 +1,6 @@
 import { getAttachment } from "../lib/jira-api/AttachmentApi";
 import z from "zod";
-import {
-    createPage,
-    type CreatePage200Response,
-    pageCreator,
-} from "../lib/confluence-api/PageAPI";
+import { createPage, pageCreator } from "../lib/confluence-api/PageAPI";
 import logger from "../lib/logger";
 import { StorageFormatValidator } from "../lib/PageValidator";
 import { createInternalComment } from "../lib/jira-api/IssueCommentAPI";
@@ -13,6 +9,7 @@ import {
     settingsRepository,
 } from "../lib/storage";
 import { AttachmentSchema } from "../../shared/schemas";
+import { pageUrl } from "../../shared/utils";
 
 const AttachmentEventSchema = z.object({
     eventType: z.literal("avi:jira:created:attachment"),
@@ -72,12 +69,6 @@ export async function handleAttachmentAdded(event: unknown, _context: unknown) {
     }
 }
 
-const pageUrl = (page: CreatePage200Response | undefined) => {
-    if (!page?._links?.base || !page?._links?.webui) return;
-
-    return `${page?._links?.base}${page?._links?.webui}`;
-};
-
 async function createPageFromAttachment(attachment: Attachment, text: string) {
     /**
      * The ID of the Confluence space where the page will be created. Will have to be configurable
@@ -96,7 +87,7 @@ async function createPageFromAttachment(attachment: Attachment, text: string) {
                 value: text,
             },
             status: "current",
-            title: `${attachment.issueId} - ${attachment.fileName} - ${attachment.createDate}`,
+            title: pageCreator.buildPageTitle(attachment),
         },
         pageCreator,
     );
