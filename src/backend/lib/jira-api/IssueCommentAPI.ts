@@ -50,7 +50,7 @@ const CommentSchema = z.object({
     author: z.object({
         accountId: z.string(),
         displayName: z.string(),
-        accountType: z.enum(["app", "atlassian"]),
+        accountType: z.string(),
     }),
     body: z.object({}),
 });
