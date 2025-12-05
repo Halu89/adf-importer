@@ -7,24 +7,29 @@ on:
     branches: [main, Add_ci]
 
 jobs:
-  build:
+  cache-and-install:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node.js 24.x
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24.x'
+          node-version: 24
           cache: 'pnpm'
-
-      - name: Install pnpm
-        run: npm install -g pnpm
 
       - name: Install dependencies
         run: pnpm install
 
+  validate:
+    needs: cache-and-install
+    runs-on: ubuntu-latest
+    steps:
       - name: Lint
         run: pnpm run lint
 
@@ -38,7 +43,7 @@ jobs:
         run: pnpm run test
 
   deploy-staging:
-    needs: build
+    needs: validate
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
@@ -65,7 +70,7 @@ jobs:
           echo "machine api.atlassian.com login $FORGE_EMAIL password $FORGE_API_TOKEN"
 
   deploy-prod:
-    needs: build
+    needs: validate
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
