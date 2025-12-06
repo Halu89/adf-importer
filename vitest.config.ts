@@ -1,11 +1,11 @@
 import path from "node:path";
-import { defineConfig } from "vitest/config";
+import {defineConfig} from "vitest/config";
 
 /**
  * Vitest config for a Node app.
  * @param sourceDir the source directory
  */
-export default ({ sourceDir = "src" }) => {
+function vitestConfig({sourceDir = "src"}) {
     return defineConfig({
         plugins: [],
         test: {
@@ -14,4 +14,6 @@ export default ({ sourceDir = "src" }) => {
             silent: "passed-only"
         },
     });
-};
+}
+
+export default vitestConfig;
