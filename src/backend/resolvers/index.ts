@@ -7,7 +7,12 @@ import {
     getAttachment,
     getAttachmentMetadata,
 } from "../lib/jira-api/AttachmentApi";
-import { createPage, RemotePageCreator } from "../lib/confluence-api/PageAPI";
+import {
+    createPage,
+    pageCreator,
+    RemotePageCreator,
+} from "../lib/confluence-api/PageAPI";
+import { getAppContext } from "@forge/api";
 
 export const handler = makeResolver<ResolverDefs>({
     /**
@@ -62,12 +67,62 @@ export const handler = makeResolver<ResolverDefs>({
         );
 
         const context = ResolverContextSchema.parse(req.context);
-        const result = await settingsRepository.getPersonalSpaceSetting(
+        const settings = await settingsRepository.getPersonalSpaceSetting(
             context.accountId,
         );
 
-        logger.debug("Personal space setting retrieved successfully");
-        return !!result;
+        if (settings === undefined) {
+            logger.debug("No personal space settings found for user");
+            return undefined;
+        } else {
+            logger.debug("Personal space setting retrieved successfully");
+            const sanitizedSettings = stripAuthentication(settings);
+            logger.debug("Settings", sanitizedSettings);
+            return sanitizedSettings;
+        }
+    },
+
+    exportPageToDefaultSpace: async (req) => {
+        logger.debug("Exporting page to default space");
+        const attachmentId = z.string().parse(req.payload.attachmentId);
+
+        const spaceSetting = await settingsRepository.getGlobalSetting();
+
+        if (!spaceSetting) {
+            logger.error("No global space setting found");
+            return;
+        }
+
+        const context = getAppContext();
+
+        console.debug("context :>> ", context);
+
+        const attachmentMeta = await getAttachmentMetadata(attachmentId);
+        const page = await getAttachment(attachmentId);
+
+        if (!page) {
+            throw new Error("Attachment not found");
+        }
+
+        return createPage(
+            {
+                spaceId: String(spaceSetting.id),
+                body: {
+                    representation: "storage",
+                    value: page,
+                },
+                status: "current",
+                title: pageCreator.buildPageTitle(
+                    attachmentMeta
+                        ? {
+                              fileName: attachmentMeta.filename,
+                              id: attachmentId,
+                          }
+                        : undefined,
+                ),
+            },
+            pageCreator,
+        );
     },
 
     /**
@@ -91,7 +146,9 @@ export const handler = makeResolver<ResolverDefs>({
             throw new Error("Attachment not found");
         }
 
-        await createPage(
+        const pageCreator = new RemotePageCreator(personalSettings);
+
+        return createPage(
             {
                 spaceId: personalSettings.space.id,
                 body: {
@@ -99,11 +156,16 @@ export const handler = makeResolver<ResolverDefs>({
                     value: page,
                 },
                 status: "current",
-                title: attachmentMeta
-                    ? `${attachmentMeta.filename} - ${attachmentMeta.id} - ${attachmentMeta.created}`
-                    : `Exported page - ${Date.now()}`,
+                title: pageCreator.buildPageTitle(
+                    attachmentMeta
+                        ? {
+                              fileName: attachmentMeta.filename,
+                              id: attachmentId,
+                          }
+                        : undefined,
+                ),
             },
-            new RemotePageCreator(personalSettings),
+            pageCreator,
         );
     },
 });
@@ -115,4 +177,11 @@ const ResolverContextSchema = z.object({
     environmentId: z.string(),
     environmentType: z.string(),
     siteUrl: z.string(),
+});
+
+const stripAuthentication = (settings: {
+    authentication: { email: string };
+}) => ({
+    ...settings,
+    authentication: { email: settings.authentication.email, token: "" },
 });

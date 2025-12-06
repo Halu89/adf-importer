@@ -1,4 +1,5 @@
 import type { PersonalSettings, Space } from "./schemas";
+import type { CreatePage200Response } from "../backend/lib/confluence-api/PageAPI";
 
 export type ResolverDefs = {
     /**
@@ -8,7 +9,13 @@ export type ResolverDefs = {
     getGlobalSpaceSetting: () => Space | undefined;
 
     savePersonalSpaceSetting: (args: { settings: PersonalSettings }) => void;
-    getPersonalSpaceSetting: (args: never) => boolean;
+    getPersonalSpaceSetting: (args: never) => PersonalSettings | undefined;
 
-    exportPageToSpace: (args: { attachmentId: string }) => void;
+    exportPageToSpace: (args: {
+        attachmentId: string;
+    }) => CreatePage200Response | undefined;
+
+    exportPageToDefaultSpace: (args: {
+        attachmentId: string;
+    }) => CreatePage200Response | undefined;
 };

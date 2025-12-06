@@ -1,8 +1,9 @@
 import { mutationOptions, queryOptions } from "@tanstack/react-query";
-import { makeInvoke, showFlag } from "@forge/bridge";
+import { makeInvoke, router, showFlag } from "@forge/bridge";
 import type { ResolverDefs } from "../../shared/types";
 import type { PersonalSettings, Space } from "../../shared/schemas";
 import { queryClient } from "../providers/QueryClientProvider";
+import { pageUrl } from "../../shared/utils";
 
 const invoke = makeInvoke<ResolverDefs>();
 
@@ -72,10 +73,85 @@ export function getPersonalSettings() {
     });
 }
 
+export function exportPageToDefaultSpace() {
+    return mutationOptions({
+        mutationFn: async (attachmentId: string) => {
+            return invoke("exportPageToDefaultSpace", { attachmentId });
+        },
+        onSuccess: (data) => {
+            const contentId: string = data ? data.id : undefined;
+            showPageCreatedFlag(contentId);
+        },
+        onError: (error) => {
+            showFlag({
+                type: "error",
+                appearance: "error",
+                title: "Error importing page",
+                description: error.message,
+                id: "page-exported-error",
+                isAutoDismiss: true,
+            });
+        },
+    });
+}
+
 export function exportPageToPersonalSpace() {
     return mutationOptions({
         mutationFn: async (attachmentId: string) => {
             return invoke("exportPageToSpace", { attachmentId });
         },
+        onSuccess: (data) => {
+            const url = pageUrl(data);
+
+            showFlag({
+                type: "success",
+                title: "Page created successfully",
+                id: `page-created ${url}`,
+                isAutoDismiss: true,
+                actions: url
+                    ? [
+                          {
+                              text: "View page",
+                              onClick: () => {
+                                  void router.open(url);
+                              },
+                          },
+                      ]
+                    : undefined,
+            });
+        },
+        onError: (error) => {
+            console.debug("error :>> ", error);
+            showFlag({
+                type: "error",
+                appearance: "error",
+                title: "Error importing page",
+                description: error.message,
+                id: "page-exported-error",
+                isAutoDismiss: true,
+            });
+        },
     });
 }
+
+const showPageCreatedFlag = (pageId: string | undefined) => {
+    showFlag({
+        type: "success",
+        title: "Page created successfully",
+        id: `page-created-${pageId}`,
+        isAutoDismiss: true,
+        actions: pageId
+            ? [
+                  {
+                      text: "View page",
+                      onClick: () => {
+                          void router.open({
+                              target: "contentView",
+                              contentId: pageId,
+                          });
+                      },
+                  },
+              ]
+            : undefined,
+    });
+};
