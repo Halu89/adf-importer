@@ -1,7 +1,7 @@
+import { Stack } from "@forge/react";
 import { useQuery } from "@tanstack/react-query";
 import { getAttachmentsForIssue } from "../../../api/AttachmentAPI";
 import useIssueId from "../hooks/useIssueId";
-import { Stack } from "@forge/react";
 import AttachmentRow from "./AttachmentRow";
 
 const AttachmentTable = () => {

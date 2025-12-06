@@ -1,5 +1,4 @@
 import z from "zod";
-import logger from "../lib/logger";
 import {
     ChangelogSchema,
     IssueSchema,
@@ -7,6 +6,7 @@ import {
     UserSchema,
 } from "../../shared/schemas";
 import { cleanupAll } from "../lib/CleanupService";
+import logger from "../lib/logger";
 
 const IssueUpdatedEventSchema = z.object({
     eventType: z.literal("avi:jira:updated:issue"),

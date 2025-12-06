@@ -1,7 +1,7 @@
 import z from "zod";
-import logger from "../lib/logger";
 import { IssueSchema, UserSchema } from "../../shared/schemas";
 import { cleanupAll } from "../lib/CleanupService";
+import logger from "../lib/logger";
 
 const IssueDeletedEventSchema = z.object({
     eventType: z.literal("avi:jira:deleted:issue"),

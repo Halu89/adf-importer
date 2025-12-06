@@ -1,9 +1,9 @@
+import { Inline, LoadingButton, Text } from "@forge/react";
 import { useMutation } from "@tanstack/react-query";
 import type { IssueAttachment } from "../../../api/AttachmentAPI";
-import { Inline, LoadingButton, Text } from "@forge/react";
 import {
-    exportPageToPersonalSpace,
     exportPageToDefaultSpace,
+    exportPageToPersonalSpace,
 } from "../../../api/InternalAPI";
 
 const AttachmentRow = ({ attachment }: { attachment: IssueAttachment }) => {

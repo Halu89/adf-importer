@@ -1,7 +1,7 @@
 import z from "zod";
-import logger from "../lib/logger";
 import { AttachmentSchema } from "../../shared/schemas";
 import { cleanup } from "../lib/CleanupService";
+import logger from "../lib/logger";
 
 const AttachmentDeletedEventSchema = z.object({
     eventType: z.literal("avi:jira:deleted:attachment"),

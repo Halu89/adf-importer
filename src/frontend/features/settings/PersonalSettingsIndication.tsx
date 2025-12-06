@@ -1,6 +1,6 @@
+import { Text } from "@forge/react";
 import { useQuery } from "@tanstack/react-query";
 import { getPersonalSettings } from "../../api/InternalAPI";
-import { Text } from "@forge/react";
 
 const PersonalSettingsIndication = () => {
     const { data, isLoading } = useQuery(getPersonalSettings());

@@ -1,10 +1,10 @@
-import React from "react";
 import ForgeReconciler, { Spinner, Text } from "@forge/react";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
-import { queryClient } from "../providers/QueryClientProvider";
+import React from "react";
 import { getPersonalSettings } from "../api/InternalAPI";
 import SettingsLink from "../components/SettingsLink";
 import AttachmentTable from "../features/external-import/components/AttachmentTable";
+import { queryClient } from "../providers/QueryClientProvider";
 
 const IssueActivityModule = () => {
     const { data: personalSettings, isLoading } = useQuery(

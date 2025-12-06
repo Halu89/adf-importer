@@ -1,6 +1,6 @@
 import api, { route } from "@forge/api";
-import logger from "../logger";
 import z from "zod";
+import logger from "../logger";
 
 export const getAttachment = async (id: string | number) => {
     try {

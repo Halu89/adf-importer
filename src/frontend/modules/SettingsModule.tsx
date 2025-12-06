@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import ForgeReconciler, {
     Box,
     Button,
@@ -8,11 +7,12 @@ import ForgeReconciler, {
     xcss,
 } from "@forge/react";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
-import { queryClient } from "../providers/QueryClientProvider";
-import GlobalSettingsEdit from "../features/settings/GlobalSettingsEdit";
+import React, { useState } from "react";
 import { getGlobalSettings } from "../api/InternalAPI";
+import GlobalSettingsEdit from "../features/settings/GlobalSettingsEdit";
 import PersonalSettingsEdit from "../features/settings/PersonalSettingsEdit";
 import PersonalSettingsIndication from "../features/settings/PersonalSettingsIndication";
+import { queryClient } from "../providers/QueryClientProvider";
 
 const App = () => {
     const { data: spaceSetting, isLoading } = useQuery(getGlobalSettings());

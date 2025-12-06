@@ -1,4 +1,3 @@
-import { Fragment, useState } from "react";
 import {
     Box,
     Button,
@@ -20,8 +19,9 @@ import {
     useForm,
     xcss,
 } from "@forge/react";
-import type { PersonalSettings } from "../../../shared/schemas";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { Fragment, useState } from "react";
+import type { PersonalSettings } from "../../../shared/schemas";
 import {
     getPersonalSettings,
     savePersonalSettings,

@@ -1,5 +1,5 @@
-import { queryOptions } from "@tanstack/react-query";
 import { requestConfluence } from "@forge/bridge";
+import { queryOptions } from "@tanstack/react-query";
 import { MultiSpaceResultSchema } from "../../shared/schemas";
 
 export function searchSpacesByTitle(debouncedKey: string) {

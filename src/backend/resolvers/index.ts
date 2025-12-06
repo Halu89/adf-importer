@@ -1,19 +1,19 @@
+import { getAppContext } from "@forge/api";
 import { makeResolver } from "@forge/resolver";
-import type { ResolverDefs } from "../../shared/types";
-import { settingsRepository } from "../lib/storage";
 import z from "zod";
-import logger from "../lib/logger";
-import {
-    getAttachment,
-    getAttachmentMetadata,
-} from "../lib/jira-api/AttachmentApi";
+import type { ResolverDefs } from "../../shared/types";
 import {
     createPage,
     pageCreator,
     RemotePageCreator,
 } from "../lib/confluence-api/PageAPI";
-import { getAppContext } from "@forge/api";
+import {
+    getAttachment,
+    getAttachmentMetadata,
+} from "../lib/jira-api/AttachmentApi";
+import logger from "../lib/logger";
 import { NoopValidator } from "../lib/PageValidator";
+import { settingsRepository } from "../lib/storage";
 
 export const handler = makeResolver<ResolverDefs>({
     /**

@@ -1,15 +1,15 @@
-import { getAttachment } from "../lib/jira-api/AttachmentApi";
 import z from "zod";
+import { AttachmentSchema } from "../../shared/schemas";
+import { pageUrl } from "../../shared/utils";
 import { createPage, pageCreator } from "../lib/confluence-api/PageAPI";
+import { getAttachment } from "../lib/jira-api/AttachmentApi";
+import { createInternalComment } from "../lib/jira-api/IssueCommentAPI";
 import logger from "../lib/logger";
 import { StorageFormatValidator } from "../lib/PageValidator";
-import { createInternalComment } from "../lib/jira-api/IssueCommentAPI";
 import {
     pageAttachmentLinkRepository,
     settingsRepository,
 } from "../lib/storage";
-import { AttachmentSchema } from "../../shared/schemas";
-import { pageUrl } from "../../shared/utils";
 
 const AttachmentEventSchema = z.object({
     eventType: z.literal("avi:jira:created:attachment"),

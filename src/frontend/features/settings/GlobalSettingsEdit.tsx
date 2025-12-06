@@ -1,4 +1,3 @@
-import React, { useMemo } from "react";
 import {
     Box,
     Button,
@@ -16,12 +15,13 @@ import {
     useForm,
     xcss,
 } from "@forge/react";
-import useDebounce from "../../hooks/useDebounce";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import React, { useMemo } from "react";
 import z from "zod";
-import { searchSpacesByTitle } from "../../api/SpaceAPI";
 import { type Space, SpaceSchema } from "../../../shared/schemas";
 import { saveGlobalSpaceSettings } from "../../api/InternalAPI";
+import { searchSpacesByTitle } from "../../api/SpaceAPI";
+import useDebounce from "../../hooks/useDebounce";
 
 interface GlobalSettingsEditProps {
     closeModal: () => void;

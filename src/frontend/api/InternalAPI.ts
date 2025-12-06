@@ -1,9 +1,9 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
 import { makeInvoke, router, showFlag } from "@forge/bridge";
-import type { ResolverDefs } from "../../shared/types";
+import { mutationOptions, queryOptions } from "@tanstack/react-query";
 import type { PersonalSettings, Space } from "../../shared/schemas";
-import { queryClient } from "../providers/QueryClientProvider";
+import type { ResolverDefs } from "../../shared/types";
 import { pageUrl } from "../../shared/utils";
+import { queryClient } from "../providers/QueryClientProvider";
 
 const invoke = makeInvoke<ResolverDefs>();
 

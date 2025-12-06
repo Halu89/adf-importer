@@ -1,5 +1,5 @@
-import type { PersonalSettings, Space } from "./schemas";
 import type { CreatePage200Response } from "../backend/lib/confluence-api/PageAPI";
+import type { PersonalSettings, Space } from "./schemas";
 
 export type ResolverDefs = {
     /**

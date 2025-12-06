@@ -1,7 +1,7 @@
 import api, { fetch, type Response, route } from "@forge/api";
 import { z } from "zod";
-import logger from "../logger";
 import type { PersonalSettings } from "../../../shared/schemas";
+import logger from "../logger";
 
 const PageBodySchema = z.object({
     representation: z.literal("storage"),

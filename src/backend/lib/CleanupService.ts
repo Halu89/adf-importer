@@ -1,7 +1,7 @@
-import { pageAttachmentLinkRepository } from "./storage";
 import { deletePage } from "./confluence-api/PageAPI";
-import logger from "./logger";
 import { deleteComment, getComments } from "./jira-api/IssueCommentAPI";
+import logger from "./logger";
+import { pageAttachmentLinkRepository } from "./storage";
 
 export async function cleanup(
     issueId: string | number,
