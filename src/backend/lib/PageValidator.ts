@@ -1,29 +1,34 @@
 import { XMLValidator } from "fast-xml-parser";
 import logger from "./logger";
 
-interface PageValidator {
-    validatePage(page: unknown): boolean;
+abstract class PageValidator {
+    protected readonly logger: Console;
+
+    protected constructor() {
+        this.logger = logger;
+    }
+
+    abstract validatePage(page: unknown): boolean;
 }
 
-export class StorageFormatValidator implements PageValidator {
+export class StorageFormatValidator extends PageValidator {
     readonly #validator: (typeof XMLValidator)["validate"];
-    readonly #logger: Console;
 
-    public static instance = new StorageFormatValidator();
+    public static readonly instance = new StorageFormatValidator();
 
     private constructor() {
+        super();
         this.#validator = (...args) => XMLValidator.validate(...args);
-        this.#logger = logger;
     }
 
     /**
      * Validate the page is in storage format by trying to parse the XML
      */
     validatePage(page: unknown): page is string {
-        this.#logger.debug("Validating page format");
+        this.logger.debug("Validating page format");
 
         if (typeof page !== "string") {
-            this.#logger.error("Invalid document format, expected string");
+            this.logger.error("Invalid document format, expected string");
             return false;
         }
 
@@ -32,10 +37,10 @@ export class StorageFormatValidator implements PageValidator {
         });
 
         if (result === true) {
-            this.#logger.debug("Page format valid");
+            this.logger.debug("Page format valid");
             return true;
         } else {
-            this.#logger.error(
+            this.logger.error(
                 "Invalid document format, XML validation failed",
                 result,
             );
@@ -48,5 +53,14 @@ export class StorageFormatValidator implements PageValidator {
      */
     private wrapPageContent(page: string): string {
         return `<storageFormat>${page}</storageFormat>`;
+    }
+}
+
+export class NoopValidator extends PageValidator {
+    public static readonly instance = new NoopValidator();
+
+    validatePage(_page: unknown): boolean {
+        this.logger.debug("Skipping validation");
+        return true;
     }
 }

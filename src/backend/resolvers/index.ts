@@ -13,6 +13,7 @@ import {
     RemotePageCreator,
 } from "../lib/confluence-api/PageAPI";
 import { getAppContext } from "@forge/api";
+import { NoopValidator } from "../lib/PageValidator";
 
 export const handler = makeResolver<ResolverDefs>({
     /**
@@ -104,6 +105,11 @@ export const handler = makeResolver<ResolverDefs>({
             throw new Error("Attachment not found");
         }
 
+        if (!NoopValidator.instance.validatePage(page)) {
+            logger.log("Ignoring attachment: Invalid document format");
+            throw new Error("Invalid document format");
+        }
+
         return createPage(
             {
                 spaceId: String(spaceSetting.id),
@@ -144,6 +150,11 @@ export const handler = makeResolver<ResolverDefs>({
         const page = await getAttachment(attachmentId);
         if (!page) {
             throw new Error("Attachment not found");
+        }
+
+        if (!NoopValidator.instance.validatePage(page)) {
+            logger.log("Ignoring attachment: Invalid document format");
+            throw new Error("Invalid document format");
         }
 
         const pageCreator = new RemotePageCreator(personalSettings);
