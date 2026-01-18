@@ -20,27 +20,29 @@
         "install:dev": "forge install --confirm-scopes --license active",
         "uninstall:dev": "forge uninstall ",
         "upgrade:dev": "forge install --upgrade --confirm-scopes --license active",
-        "tunnel:dev": "forge tunnel"
+        "tunnel:dev": "forge tunnel",
+        "update:deps": "ncu --interactive"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.3.8",
-        "@forge/cli": "^12.10.0",
+        "@biomejs/biome": "2.3.11",
+        "@forge/cli": "^12.13.0",
         "@types/node": "^24.10.1",
         "@types/react": "^18.0.0",
-        "eslint": "^8.56.0",
-        "eslint-plugin-react-hooks": "^4.6.0",
-        "pnpm": "^10.24.0",
+        "eslint": "^9.39.2",
+        "eslint-plugin-react-hooks": "^7.0.1",
+        "npm-check-updates": "^19.3.1",
+        "pnpm": "^10.28.0",
         "typescript": "^4.8.4",
-        "vitest": "^4.0.14"
+        "vitest": "^4.0.17"
     },
     "dependencies": {
-        "@forge/api": "^6.4.0",
-        "@forge/bridge": "5.9.1",
-        "@forge/kvs": "^1.2.2",
-        "@forge/react": "11.8.1",
+        "@forge/api": "^6.4.3",
+        "@forge/bridge": "5.10.2",
+        "@forge/kvs": "^1.2.5",
+        "@forge/react": "11.9.1",
         "@forge/resolver": "1.7.1",
-        "@tanstack/react-query": "^5.90.11",
-        "fast-xml-parser": "^5.3.2",
+        "@tanstack/react-query": "^5.90.19",
+        "fast-xml-parser": "^5.3.3",
         "react": "^18.2.0",
         "zod": "3.24.4"
     }
