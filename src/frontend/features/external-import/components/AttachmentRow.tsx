@@ -5,8 +5,10 @@ import {
     exportPageToDefaultSpace,
     exportPageToPersonalSpace,
 } from "../../../api/InternalAPI";
+import useIssueKey from "../hooks/useIssueKey";
 
 const AttachmentRow = ({ attachment }: { attachment: IssueAttachment }) => {
+    const issueKey = useIssueKey();
     const { mutate: exportAttachmentToPersonal, isPending: isPendingPersonal } =
         useMutation(exportPageToPersonalSpace());
     const { mutate: exportAttachmentToDefault, isPending: isPendingDefault } =
@@ -18,7 +20,10 @@ const AttachmentRow = ({ attachment }: { attachment: IssueAttachment }) => {
             <Inline space={"space.150"}>
                 <LoadingButton
                     onClick={() => {
-                        exportAttachmentToDefault(attachment.id);
+                        exportAttachmentToDefault({
+                            attachmentId: attachment.id,
+                            issueKey,
+                        });
                     }}
                     isLoading={isPendingDefault}
                 >
@@ -27,7 +32,10 @@ const AttachmentRow = ({ attachment }: { attachment: IssueAttachment }) => {
 
                 <LoadingButton
                     onClick={() => {
-                        exportAttachmentToPersonal(attachment.id);
+                        exportAttachmentToPersonal({
+                            attachmentId: attachment.id,
+                            issueKey,
+                        });
                     }}
                     isLoading={isPendingPersonal}
                 >

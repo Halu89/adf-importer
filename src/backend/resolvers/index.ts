@@ -86,6 +86,7 @@ export const handler = makeResolver<ResolverDefs>({
     exportPageToDefaultSpace: async (req) => {
         logger.debug("Exporting page to default space");
         const attachmentId = z.string().parse(req.payload.attachmentId);
+        const issueKey = z.string().optional().parse(req.payload.issueKey);
 
         const spaceSetting = await settingsRepository.getGlobalSetting();
 
@@ -119,12 +120,9 @@ export const handler = makeResolver<ResolverDefs>({
                 },
                 status: "current",
                 title: pageCreator.buildPageTitle(
-                    attachmentMeta
-                        ? {
-                              fileName: attachmentMeta.filename,
-                              id: attachmentId,
-                          }
-                        : undefined,
+                    attachmentMeta?.filename,
+                    issueKey,
+                    attachmentId,
                 ),
             },
             pageCreator,
@@ -138,6 +136,7 @@ export const handler = makeResolver<ResolverDefs>({
         logger.debug("Exporting page to personal space");
         const context = ResolverContextSchema.parse(req.context);
         const attachmentId = z.string().parse(req.payload.attachmentId);
+        const issueKey = z.string().optional().parse(req.payload.issueKey);
 
         const personalSettings =
             await settingsRepository.getPersonalSpaceSetting(context.accountId);
@@ -168,12 +167,9 @@ export const handler = makeResolver<ResolverDefs>({
                 },
                 status: "current",
                 title: pageCreator.buildPageTitle(
-                    attachmentMeta
-                        ? {
-                              fileName: attachmentMeta.filename,
-                              id: attachmentId,
-                          }
-                        : undefined,
+                    attachmentMeta?.filename,
+                    issueKey,
+                    attachmentId,
                 ),
             },
             pageCreator,

@@ -75,8 +75,17 @@ export function getPersonalSettings() {
 
 export function exportPageToDefaultSpace() {
     return mutationOptions({
-        mutationFn: async (attachmentId: string) => {
-            return invoke("exportPageToDefaultSpace", { attachmentId });
+        mutationFn: async ({
+            attachmentId,
+            issueKey,
+        }: {
+            attachmentId: string;
+            issueKey?: string;
+        }) => {
+            return invoke("exportPageToDefaultSpace", {
+                attachmentId,
+                issueKey,
+            });
         },
         onSuccess: (data) => {
             const contentId: string = data ? data.id : undefined;
@@ -97,8 +106,14 @@ export function exportPageToDefaultSpace() {
 
 export function exportPageToPersonalSpace() {
     return mutationOptions({
-        mutationFn: async (attachmentId: string) => {
-            return invoke("exportPageToSpace", { attachmentId });
+        mutationFn: async ({
+            attachmentId,
+            issueKey,
+        }: {
+            attachmentId: string;
+            issueKey?: string;
+        }) => {
+            return invoke("exportPageToSpace", { attachmentId, issueKey });
         },
         onSuccess: (data) => {
             const url = pageUrl(data);

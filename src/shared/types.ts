@@ -13,9 +13,11 @@ export type ResolverDefs = {
 
     exportPageToSpace: (args: {
         attachmentId: string;
+        issueKey?: string;
     }) => CreatePage200Response | undefined;
 
     exportPageToDefaultSpace: (args: {
         attachmentId: string;
+        issueKey?: string;
     }) => CreatePage200Response | undefined;
 };
