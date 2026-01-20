@@ -3,6 +3,7 @@ import { AttachmentSchema } from "../../shared/schemas";
 import { pageUrl } from "../../shared/utils";
 import { createPage, pageCreator } from "../lib/confluence-api/PageAPI";
 import { getAttachment } from "../lib/jira-api/AttachmentApi";
+import { getIssueKey } from "../lib/jira-api/IssueApi";
 import { createInternalComment } from "../lib/jira-api/IssueCommentAPI";
 import logger from "../lib/logger";
 import { StorageFormatValidator } from "../lib/PageValidator";
@@ -79,6 +80,19 @@ async function createPageFromAttachment(attachment: Attachment, text: string) {
         return;
     }
 
+    // Fetch the issue key for better readability in the page title
+    // The issue key (e.g., "PROJ-123") is more human-readable than the attachment ID
+    let issueKey: string | undefined;
+    try {
+        issueKey = await getIssueKey(attachment.issueId);
+    } catch (e: unknown) {
+        logger.error(
+            `Failed to fetch issue key for issue ID: ${attachment.issueId}`,
+            e,
+        );
+        // Continue with attachment ID as fallback if issue key fetch fails
+    }
+
     return createPage(
         {
             spaceId: String(spaceSetting.id),
@@ -87,7 +101,11 @@ async function createPageFromAttachment(attachment: Attachment, text: string) {
                 value: text,
             },
             status: "current",
-            title: pageCreator.buildPageTitle(attachment),
+            title: pageCreator.buildPageTitle(
+                attachment.fileName,
+                issueKey,
+                attachment.id,
+            ),
         },
         pageCreator,
     );

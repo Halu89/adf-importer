@@ -90,10 +90,30 @@ const humanFriendlyError = (
 abstract class PageCreator {
     abstract createPage(pageData: CreatePageData): Promise<Response>;
 
-    buildPageTitle(attachment: { fileName: string; id: string } | undefined) {
-        return attachment
-            ? `${attachment.fileName} - ${attachment.id} - ${Date.now()}`
-            : `Exported page - ${Date.now()}`;
+    /**
+     * Builds a page title using the file name and issue key (preferred) or attachment ID (fallback).
+     * The issue key is more human-readable than the attachment ID (e.g., "PROJ-123" vs "12345").
+     *
+     * @param fileName - The name of the attachment file
+     * @param issueKey - Optional issue key (e.g., "PROJ-123"). Used when available for better readability.
+     * @param attachmentId - Optional attachment ID. Used as fallback if issue key is not provided.
+     * @returns A formatted page title string
+     */
+    buildPageTitle(
+        fileName: string | undefined,
+        issueKey?: string,
+        attachmentId?: string,
+    ) {
+        const identifier = issueKey ?? attachmentId;
+        const timestamp = Date.now();
+
+        if (fileName && identifier) {
+            return `${fileName} - ${identifier} - ${timestamp}`;
+        } else if (fileName) {
+            return `${fileName} - ${timestamp}`;
+        } else {
+            return `Exported page - ${timestamp}`;
+        }
     }
 }
 
